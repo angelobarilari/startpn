@@ -1,5 +1,4 @@
 import React from "react";
-import companyIcon from "../../images/svg/companyIcon.svg";
 
 const Header = ({ children, ...rest }) => {
     const styleHeader = {
@@ -8,7 +7,6 @@ const Header = ({ children, ...rest }) => {
 
     return (
         <header className="genericHeader" style={styleHeader}>
-            <img src={companyIcon} className="logo" alt="Company icon" />
             {children}
         </header>
     );

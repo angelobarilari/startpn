@@ -12,14 +12,14 @@ routes.post('/sessions', ControllerSessions.login)
 
 /** USERS **/
 routes.post('/users', ControllerUsers.createUser)
-routes.get('/users/:id', ControllerUsers.getUserById)
-routes.get('/users/:email', ControllerUsers.getUserByEmail)
+routes.get('/users/:id', authMiddleware, ControllerUsers.getUserById)
+routes.get('/users/email', ControllerUsers.getUserByEmail)
 routes.patch('/users/:id', authMiddleware, ControllerUsers.updateUser)
 routes.delete('/users/:id', authMiddleware, ControllerUsers.deleteUser)
 
 /** SCHEDULES **/ 
 routes.post('/schedules', authMiddleware, ControllerSchedules.createSchedule)
-routes.get('/schedules/:id', authMiddleware, ControllerSchedules.getSchedulesByUserId)
+routes.get('/schedules', authMiddleware, ControllerSchedules.getSchedulesByUserId)
 routes.patch('/schedules/:id', authMiddleware, ControllerSchedules.updateSchedule)
 routes.delete('/schedules/:id', authMiddleware, ControllerSchedules.deleteSchedule)
 
