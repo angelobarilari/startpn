@@ -27,7 +27,7 @@ class ControllerSession {
             const token = jwt.sign(
                 { userId: user.id }, 
                 process.env.TOKEN_CLIENT, 
-                { expiresIn: '1h' }
+                { expiresIn: '24h' }
             )
             
             return res.status(200).json({ token })

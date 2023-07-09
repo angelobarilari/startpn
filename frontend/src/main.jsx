@@ -7,9 +7,9 @@ import AppStack from "./routes/AppStack";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-            <Provider>
-                <App />
-                <AppStack />
-            </Provider>
+        <Provider>
+            <App />
+            <AppStack />
+        </Provider>
     </React.StrictMode>
 );

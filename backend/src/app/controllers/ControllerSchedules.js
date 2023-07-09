@@ -35,18 +35,12 @@ class ControllerSchedules {
     }
 
     async getSchedulesByUserId(req, res) {
-        const { id } = req.params
         const decodedId = req.decodedId
-
-        if (id != decodedId)
-            return res.status(403).json({
-                message:"No permissions to perform this action"
-            })
 
         try {
             const schedules = await Schedules.findAll({
                 where: {
-                  ownerId: id
+                  ownerId: decodedId
                 },
                 include: [
                     {   model: Users, as: 'owner', 
@@ -57,8 +51,6 @@ class ControllerSchedules {
                     }
                 ]
             })
-
-
             
             return res.status(200).json({ schedules})
         } catch (error) {

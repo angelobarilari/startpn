@@ -4,9 +4,9 @@ const { hash } = require('bcrypt')
 
 class ControllerUsers {
     async createUser(req, res) {
-        const { name, email, password, confirmPassword } = req.body
+        const { name, email, password } = req.body
 
-        hasNullOrUndefined(res, name, email, password, confirmPassword)
+        hasNullOrUndefined(res, name, email, password)
 
         const userExist = await Users.findOne({ where: { email } })
 
@@ -18,14 +18,16 @@ class ControllerUsers {
         try {
             const hashedPassword = await hash(password, 10)
 
-            const user = await Users.create({
+            const createdUser = await Users.create({
                 name,
                 email,
                 password: hashedPassword
             })
-            
-            user.password = undefined
 
+            const user = await Users.findByPk(createdUser.id, {
+                attributes: { exclude: ['password'] }
+            })
+            
             return res.status(201).json({ 
                 message: 'User created successfully', 
                 user 
@@ -39,9 +41,12 @@ class ControllerUsers {
 
     async getUserByEmail(req, res) {
         try {
-            const { email } = req.params
-        
-            const user = await Users.findOne({ where: email})
+            const { email } = req.body
+
+            const user = await Users.findOne({
+                where: { email },
+                attributes: { exclude: ['password'] }
+            })
         
             if (!user) 
                 return res.status(404).json({ 
@@ -57,16 +62,24 @@ class ControllerUsers {
     }
 
     async getUserById(req, res) {
+        const { id } = req.params
+        const decodedId = req.decodedId
+
+        if (id != decodedId)
+            return res.status(403).json({
+                message:"No permissions to perform this action"
+            })
+
         try {
-            const { id } = req.params
-        
-            const user = await Users.findByPk(id)
+            const user = await Users.findByPk(id, {
+                attributes: { exclude: ['password'] }
+            })
         
             if (!user) 
                 return res.status(404).json({ 
                     message: 'User not found' 
                 })
-        
+            
             return res.status(200).json(user)
         } catch (error) {
             return res.status(500).json({ 
@@ -94,16 +107,18 @@ class ControllerUsers {
         try {
             const { name, email, password } = req.body
 
-            const updatedUser = await user.update(
+            await user.update(
                 { name, email, password }, 
                 { returning: true }
             )
 
-            updatedUser.password = undefined
+            const user = await Users.findByPk(id, {
+                attributes: { exclude: ['password'] }
+            })
 
             return res.status(200).json({ 
                 message: 'User updated successfully',
-                user: updatedUser 
+                user 
             })
         } catch (error) {
             return res.status(500).json({ 
