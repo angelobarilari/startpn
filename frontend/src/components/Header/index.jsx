@@ -1,12 +1,12 @@
 import React from "react";
 
-const Header = ({ children, ...rest }) => {
+const Header = ({ className, children, ...rest }) => {
     const styleHeader = {
         ...rest,
     };
 
     return (
-        <header className="genericHeader" style={styleHeader}>
+        <header className={className || "genericHeader"} style={styleHeader}>
             {children}
         </header>
     );

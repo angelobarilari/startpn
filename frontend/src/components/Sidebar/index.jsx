@@ -1,12 +1,12 @@
 import React from "react";
 
-const Sidebar = ({ children, ...rest }) => {
+const Sidebar = ({ className, children, ...rest }) => {
     const styleSidebar = {
         ...rest,
     };
 
     return (
-        <aside className="genericAside" style={styleSidebar}>
+        <aside className={className || "genericAside"} style={styleSidebar}>
             {children}
         </aside>
     );

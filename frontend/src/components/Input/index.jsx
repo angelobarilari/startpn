@@ -1,6 +1,6 @@
 import React from "react";
 
-const Input = ({ value, onChange, placeholder, type, ...rest }) => {
+const Input = ({ className, value, onChange, placeholder, type, ...rest }) => {
     const styleInput = {
         ...rest,
     };
@@ -8,7 +8,7 @@ const Input = ({ value, onChange, placeholder, type, ...rest }) => {
     return (
         <>
             <input
-                className="genericInput"
+                className={className || "genericInput"}
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}

@@ -1,12 +1,16 @@
 import React from "react";
 
-const Label = ({ htmlFor, children, ...rest }) => {
+const Label = ({ className, htmlFor, children, ...rest }) => {
     const styleLabel = {
         ...rest,
     };
 
     return (
-        <label htmlFor={htmlFor} style={styleLabel}>
+        <label
+            className={className || "genericLabel"}
+            htmlFor={htmlFor}
+            style={styleLabel}
+        >
             {children}
         </label>
     );

@@ -1,12 +1,16 @@
 import React from "react";
 
-const Form = ({ children, onSubmit, ...rest }) => {
+const Form = ({ className, children, onSubmit, ...rest }) => {
     const styleForm = {
         ...rest,
     };
 
     return (
-        <form className="genericForm" style={styleForm} onSubmit={onSubmit}>
+        <form
+            className={className || "genericForm"}
+            style={styleForm}
+            onSubmit={onSubmit}
+        >
             {children}
         </form>
     );
