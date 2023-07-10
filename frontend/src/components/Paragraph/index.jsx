@@ -1,11 +1,15 @@
 import React from "react";
 
-const Paragraph = ({ children, ...rest }) => {
+const Paragraph = ({ className, children, ...rest }) => {
     const styleParagraph = {
         ...rest,
     };
 
-    return <p style={styleParagraph}>{children}</p>;
+    return (
+        <p className={className || "genericParagraph"} style={styleParagraph}>
+            {children}
+        </p>
+    );
 };
 
 export default Paragraph;

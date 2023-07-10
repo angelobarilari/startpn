@@ -33,9 +33,13 @@ class Schedules extends Model {
               type: Sequelize.STRING,
               allowNull: false
             },
-            scheduleDate: {
+            startDate: {
               type: Sequelize.DATE,
-              allowNull: false
+              allowNull: false,
+            },
+            endDate: {
+              type: Sequelize.DATE,
+              allowNull: false,
             },
             talkingPoints: {
               type: Sequelize.JSON,

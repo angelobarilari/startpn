@@ -3,7 +3,7 @@ const Users = require('../models/Users')
 
 class ControllerSchedules {
     async createSchedule(req, res) {
-        const { scheduleName, scheduleDate, guestEmail, talkingPoints } = req.body
+        const { scheduleName, startDate, endDate, guestEmail, talkingPoints } = req.body
         const ownerId = req.decodedId
 
         const guest = await Users.findOne({ where: { email: guestEmail } })
@@ -18,7 +18,8 @@ class ControllerSchedules {
                 ownerId,
                 guestId: guest.id,
                 scheduleName,
-                scheduleDate,
+                startDate,
+                endDate,
                 talkingPoints
             })
       

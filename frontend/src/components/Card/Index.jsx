@@ -1,12 +1,12 @@
 import React from "react";
 
-const Card = ({ children, ...rest }) => {
+const Card = ({ className, children, ...rest }) => {
     const styleCard = {
         ...rest,
     };
 
     return (
-        <div className="genericCard" style={styleCard}>
+        <div className={className || "genericCard"} style={styleCard}>
             {children}
         </div>
     );

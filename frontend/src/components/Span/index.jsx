@@ -1,12 +1,12 @@
 import React from "react";
 
-const Span = ({ children, ...rest }) => {
+const Span = ({ className, children, ...rest }) => {
     const styleSpan = {
         ...rest,
     };
 
     return (
-        <span className="genericAside" style={styleSpan}>
+        <span className={className || "genericSpan"} style={styleSpan}>
             {children}
         </span>
     );
