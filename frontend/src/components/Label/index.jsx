@@ -1,7 +1,8 @@
 import React from "react";
 
-const Label = ({ className, htmlFor, children, ...rest }) => {
+const Label = ({ className, htmlFor, children, style, ...rest }) => {
     const styleLabel = {
+        ...style,
         ...rest,
     };
 

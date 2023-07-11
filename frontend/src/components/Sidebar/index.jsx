@@ -1,15 +1,20 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-const Sidebar = ({ className, children, ...rest }) => {
+const Sidebar = forwardRef(({ className, children, style, ...rest }, ref) => {
     const styleSidebar = {
+        ...style,
         ...rest,
     };
 
     return (
-        <aside className={className || "genericAside"} style={styleSidebar}>
+        <aside
+            ref={ref}
+            className={className || "genericAside"}
+            style={styleSidebar}
+        >
             {children}
         </aside>
     );
-};
+});
 
 export default Sidebar;

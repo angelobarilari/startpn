@@ -12,6 +12,7 @@ routes.post('/sessions', ControllerSessions.login)
 
 /** USERS **/
 routes.post('/users', ControllerUsers.createUser)
+routes.get('/users', authMiddleware, ControllerUsers.getUsers)
 routes.get('/users/:id', authMiddleware, ControllerUsers.getUserById)
 routes.get('/users/email', ControllerUsers.getUserByEmail)
 routes.patch('/users/:id', authMiddleware, ControllerUsers.updateUser)

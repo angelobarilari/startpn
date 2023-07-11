@@ -1,7 +1,8 @@
 import React from "react";
 
-const Form = ({ className, children, onSubmit, ...rest }) => {
+const Form = ({ className, children, onSubmit, style, ...rest }) => {
     const styleForm = {
+        ...style,
         ...rest,
     };
 

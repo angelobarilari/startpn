@@ -1,7 +1,8 @@
 import React from "react";
 
-const Line = ({ className, ...rest }) => {
+const Line = ({ className, style, ...rest }) => {
     const styleLine = {
+        ...style,
         ...rest,
     };
 

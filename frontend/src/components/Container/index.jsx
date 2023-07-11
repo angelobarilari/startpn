@@ -1,7 +1,8 @@
 import React from "react";
 
-const Container = ({ className, children, ...rest }) => {
+const Container = ({ className, children, style, ...rest }) => {
     const styleBox = {
+        ...style,
         ...rest,
     };
 

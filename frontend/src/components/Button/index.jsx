@@ -1,7 +1,8 @@
 import React from "react";
 
-const Button = ({ className, onClick, children, ...rest }) => {
+const Button = ({ className, onClick, children, style, ...rest }) => {
     const styleButton = {
+        ...style,
         ...rest,
     };
 
