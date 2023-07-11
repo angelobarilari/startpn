@@ -12,8 +12,10 @@ import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 import { theme } from "../../global/styles/theme";
-
 import { login } from "../../services/api";
+import { inputStyle } from "../../global/styles/input";
+import { labelStyle } from "../../global/styles/label";
+
 import steveJobs from "../../images/svg/steveJobs.svg";
 import companyIcon from "../../images/svg/companyIcon.svg";
 
@@ -97,25 +99,14 @@ const Login = () => {
                                 gap="10px"
                             >
                                 <Label
-                                    height="fit-content"
-                                    fontSize="14px"
-                                    lineHeight="18.21px"
-                                    letter="0.2px"
-                                    textAlign="left"
+                                    style={labelStyle}
                                     htmlFor="email"
-                                    color={theme.colors.black}
                                     children={"Email"}
                                 />
                                 <Input
+                                    style={inputStyle}
                                     placeholder="Insira seu email"
                                     type="email"
-                                    width="100%"
-                                    height="30%"
-                                    borderRadius="10px"
-                                    paddingLeft="15px"
-                                    color={theme.colors.black}
-                                    backgroundColor={theme.colors.white}
-                                    border={`1px solid ${theme.colors.lightGray}`}
                                     onChange={(event) =>
                                         setEmail(event.target.value)
                                     }
@@ -123,26 +114,14 @@ const Login = () => {
                                 />
 
                                 <Label
-                                    height="fit-content"
-                                    fontSize="14px"
-                                    lineHeight="18.21px"
-                                    letter="0.2px"
-                                    textAlign="left"
+                                    style={labelStyle}
                                     htmlFor="password"
-                                    color={theme.colors.black}
                                     children={"Senha"}
                                 />
                                 <Input
+                                    style={inputStyle}
                                     placeholder="Insira sua senha"
                                     type="password"
-                                    width="100%"
-                                    height="30%"
-                                    borderRadius="10px"
-                                    paddingLeft="15px"
-                                    paddingRight="15px"
-                                    color={theme.colors.black}
-                                    backgroundColor={theme.colors.white}
-                                    border={`1px solid ${theme.colors.lightGray}`}
                                     onChange={(event) =>
                                         setPassword(event.target.value)
                                     }

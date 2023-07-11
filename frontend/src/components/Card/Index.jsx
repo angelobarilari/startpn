@@ -1,7 +1,8 @@
 import React from "react";
 
-const Card = ({ className, children, ...rest }) => {
+const Card = ({ className, children, style, ...rest }) => {
     const styleCard = {
+        ...style,
         ...rest,
     };
 

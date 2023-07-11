@@ -30,3 +30,7 @@ export const login = async (data) => {
 export const getSchedules = async () => {
     return api.get("/schedules");
 };
+
+export const getUsers = async () => {
+    return api.get("/users");
+};

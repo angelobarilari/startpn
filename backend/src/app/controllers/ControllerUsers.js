@@ -3,6 +3,20 @@ const hasNullOrUndefined = require('../utils/hasNullOrUndefined')
 const { hash } = require('bcrypt')
 
 class ControllerUsers {
+    async getUsers(req, res) {
+        try {
+            const users = await Users.findAll()
+
+            return res.status(201).json({ 
+                users 
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+
     async createUser(req, res) {
         const { name, email, password } = req.body
 

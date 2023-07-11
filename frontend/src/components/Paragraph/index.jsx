@@ -1,7 +1,8 @@
 import React from "react";
 
-const Paragraph = ({ className, children, ...rest }) => {
+const Paragraph = ({ className, children, style, ...rest }) => {
     const styleParagraph = {
+        ...style,
         ...rest,
     };
 

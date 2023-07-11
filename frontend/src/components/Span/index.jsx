@@ -1,7 +1,8 @@
 import React from "react";
 
-const Span = ({ className, children, ...rest }) => {
+const Span = ({ className, children, style, ...rest }) => {
     const styleSpan = {
+        ...style,
         ...rest,
     };
 
