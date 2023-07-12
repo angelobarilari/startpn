@@ -1,13 +1,17 @@
 import React from "react";
 
-const Select = ({ className, children, style, ...rest }) => {
+const Select = ({ value, className, children, style, ...rest }) => {
     const styleSelect = {
         ...style,
         ...rest,
     };
 
     return (
-        <select className={className || "genericSelect"} style={styleSelect}>
+        <select
+            value={value}
+            className={className || "genericSelect"}
+            style={styleSelect}
+        >
             {children}
         </select>
     );

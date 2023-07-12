@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
+import Schedules from "../../components/Schedules";
 import Container from "../../components/Container";
 import Paragraph from "../../components/Paragraph";
 import Sidebar from "../../components/Sidebar";
-import Card from "../../components/Card/Index";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
 import Select from "../../components/Select";
@@ -10,50 +10,50 @@ import Label from "../../components/Label";
 import Input from "../../components/Input";
 import Line from "../../components/Line";
 import Span from "../../components/Span";
+import Form from "../../components/Form";
 
 import { theme } from "../../global/styles/theme";
-import { getSchedules, getUsers } from "../../services/api";
-import { SchedulesContext } from "../../context/schedules";
+import { createSchedule } from "../../services/api";
+
+import { convertToTimeStamp } from "../../utils";
+
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 import { inputStyle } from "../../global/styles/input";
 import { labelStyle } from "../../global/styles/label";
-import { formatDateRange } from "../../utils";
 
 import companyIcon from "../../images/svg/companyIcon.svg";
 import logoutIcon from "../../images/svg/logoutIcon.svg";
 import menuIcon from "../../images/svg/menuIcon.svg";
 import addScheduleBtn from "../../images/svg/addScheduleBtn.svg";
 
-import { Link } from "react-router-dom";
-
 import { useMediaQuery } from "react-responsive";
+import { compareAsc, isBefore } from "date-fns";
 
-import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineMessage, AiOutlineClose } from "react-icons/ai";
 import { RiSearch2Line } from "react-icons/ri";
 import { MdChecklist } from "react-icons/md";
 import { PiGearSix } from "react-icons/pi";
-import { BiCircle } from "react-icons/bi";
 import { BiUser } from "react-icons/bi";
 
 import Modal from "react-modal";
 
-import "./style.css";
+import { UsersContext } from "../../context/users";
+import { SchedulesContext } from "../../context/schedules";
 
 const Dashboard = () => {
-    const { schedules, setSchedules } = useContext(SchedulesContext);
-    const [users, setUsers] = useState([]);
+    const { users } = useContext(UsersContext);
+    const { schedules } = useContext(SchedulesContext);
+
+    const [pastSchedules, setPastSchedules] = useState([]);
+    const [upcomingSchedules, setUpcomingSchedules] = useState([]);
+    const [activeScheduleList, setActiveScheduleList] = useState("upcoming");
+
     const [sidebarVisibility, setSidebarVisibility] = useState(false);
     const [selectedButton, setSelectedButton] = useState(0);
-    const [checkedCards, setCheckedCards] = useState([]);
     const sidebarRef = useRef(null);
 
-    const [selectedCardId, setSelectedCardId] = useState(null);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [createScheduleModalIsOpen, setCreateScheduleModalIsOpen] =
         useState(false);
-    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
     const [newScheduleName, setNewScheduleName] = useState(undefined);
     const [newScheduleDate, setNewScheduleDate] = useState(undefined);
@@ -62,6 +62,56 @@ const Dashboard = () => {
 
     const [talkingPoints, setTalkingPoints] = useState([]);
     const [newTalkingPoints, setNewTalkingPoints] = useState([]);
+
+    useEffect(() => {
+        const currentDate = new Date();
+
+        const filteredPastSchedules = schedules.filter((schedule) =>
+            isBefore(new Date(schedule.startDate), currentDate)
+        );
+        const sortedPastSchedules = filteredPastSchedules.sort((a, b) =>
+            compareAsc(new Date(a.startDate), new Date(b.startDate))
+        );
+
+        const filteredUpcomingSchedules = schedules.filter(
+            (schedule) => !isBefore(new Date(schedule.startDate), currentDate)
+        );
+        const sortedUpcomingSchedules = filteredUpcomingSchedules.sort((a, b) =>
+            compareAsc(new Date(a.startDate), new Date(b.startDate))
+        );
+
+        setPastSchedules(sortedPastSchedules);
+        setUpcomingSchedules(sortedUpcomingSchedules);
+    }, [schedules]);
+
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutsideSidebar);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutsideSidebar);
+        };
+    }, []);
+
+    const cleanCache = () => {
+        setNewScheduleName(undefined);
+        setNewScheduleDate(undefined);
+        setNewScheduleHour(undefined);
+        setNewGuest(undefined);
+        setNewTalkingPoints([]);
+    };
+
+    const formatedDateandHour = convertToTimeStamp(
+        newScheduleDate,
+        newScheduleHour
+    );
+
+    const data = {
+        scheduleName: newScheduleName,
+        startDate: formatedDateandHour.startDate,
+        endDate: formatedDateandHour.endDate,
+        guestEmail: newGuest,
+        talkingPoints,
+    };
 
     const addNewTalkingPoints = () => {
         setNewTalkingPoints([...newTalkingPoints, ""]);
@@ -73,28 +123,16 @@ const Dashboard = () => {
         setTalkingPoints(updatedTalkingPoints);
     };
 
-    const cleanCache = () => {
-        setNewScheduleName(undefined);
-        setNewScheduleDate(undefined);
-        setNewScheduleHour(undefined);
-        setNewGuest(undefined);
-        setNewTalkingPoints([]);
+    const handleCreateSchedule = (event) => {
+        event.preventDefault();
+
+        createSchedule(data);
+        cleanCache();
     };
 
     const handleCloseCreateScheduleModal = () => {
+        cleanCache();
         setCreateScheduleModalIsOpen(false);
-        cleanCache();
-    };
-
-    const handleDeleteModal = () => {
-        setModalIsOpen(false);
-        setDeleteModalIsOpen(true);
-    };
-
-    const handleEditModal = () => {
-        setModalIsOpen(false);
-        setEditModalIsOpen(true);
-        cleanCache();
     };
 
     const handleClickOutsideSidebar = (event) => {
@@ -109,36 +147,10 @@ const Dashboard = () => {
         }
     };
 
-    const handleCheckClick = (id) => {
-        if (checkedCards.includes(id))
-            setCheckedCards(checkedCards.filter((cardId) => cardId !== id));
-        else setCheckedCards([...checkedCards, id]);
-    };
-
     const handleLogout = () => {
         localStorage.removeItem("@STARTPN-TOKEN");
         window.location.href = "/login";
     };
-
-    useEffect(() => {
-        document.addEventListener("click", handleClickOutsideSidebar);
-
-        return () => {
-            document.removeEventListener("click", handleClickOutsideSidebar);
-        };
-    }, []);
-
-    useEffect(() => {
-        getSchedules()
-            .then((res) => setSchedules(res.data.schedules))
-            .catch((err) => console.log(err.response.data));
-    }, [setSchedules]);
-
-    useEffect(() => {
-        getUsers()
-            .then((res) => setUsers(res.data.users))
-            .catch((err) => console.log(err.response.data));
-    }, [setUsers]);
 
     const isDesktop = useMediaQuery({ minWidth: 768 });
 
@@ -317,15 +329,45 @@ const Dashboard = () => {
                                     width="50%"
                                     borderRadius="100px"
                                     children="1:1 agendadas"
-                                    backgroundColor={theme.colors.babyBlue}
+                                    style={
+                                        activeScheduleList === "upcoming"
+                                            ? {
+                                                  color: theme.colors.white,
+                                                  backgroundColor:
+                                                      theme.colors.babyBlue,
+                                              }
+                                            : {
+                                                  color: theme.colors.babyBlue,
+                                                  backgroundColor:
+                                                      theme.colors.white,
+                                              }
+                                    }
+                                    onClick={() =>
+                                        setActiveScheduleList("upcoming")
+                                    }
                                 />
 
                                 <Button
                                     width="50%"
                                     borderRadius="100px"
                                     children="1:1 realizadas"
-                                    color={theme.colors.babyBlue}
-                                    backgroundColor={theme.colors.white}
+                                    type="button"
+                                    style={
+                                        activeScheduleList === "past"
+                                            ? {
+                                                  color: theme.colors.white,
+                                                  backgroundColor:
+                                                      theme.colors.babyBlue,
+                                              }
+                                            : {
+                                                  color: theme.colors.babyBlue,
+                                                  backgroundColor:
+                                                      theme.colors.white,
+                                              }
+                                    }
+                                    onClick={() =>
+                                        setActiveScheduleList("past")
+                                    }
                                 />
                             </Container>
                         </Container>
@@ -341,778 +383,19 @@ const Dashboard = () => {
                             flexDirection="column"
                             flexShrink="0"
                         >
-                            {schedules.map((schedule) => (
-                                <Card
-                                    key={schedule.id}
-                                    width="100%"
-                                    height="180px"
-                                    gap="10px"
-                                    padding="20px"
-                                    display="flex"
-                                    flexDirection="column"
-                                    alignItems="flex-start"
-                                    margin="7.5px"
-                                    borderRadius="10px"
-                                    color="black"
-                                    border={`1px solid ${theme.colors.lightGray}`}
-                                >
-                                    <Container
-                                        className="cardHeader"
-                                        width="100%"
-                                        height="30%"
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                    >
-                                        {checkedCards.includes(schedule.id) ? (
-                                            <BsCheckCircleFill
-                                                size={25}
-                                                style={{
-                                                    color: theme.colors
-                                                        .babyBlue,
-                                                    backgroundColor:
-                                                        theme.colors.white,
-                                                    borderRadius: "100%",
-                                                }}
-                                                onClick={() =>
-                                                    handleCheckClick(
-                                                        schedule.id
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <BiCircle
-                                                size={25}
-                                                style={{
-                                                    color: theme.colors
-                                                        .babyBlue,
-                                                    borderRadius: "100%",
-                                                }}
-                                                onClick={() =>
-                                                    handleCheckClick(
-                                                        schedule.id
-                                                    )
-                                                }
-                                            />
-                                        )}
-
-                                        <Container
-                                            className="scheduleInfos"
-                                            height="100%"
-                                            width="80%"
-                                            display="flex"
-                                            flexDirection="column"
-                                            justifyContent="center"
-                                            flexShrink="0"
-                                            gap="10px"
-                                        >
-                                            <Span
-                                                textAlign="left"
-                                                fontSize="14px"
-                                                fontStyle="normal"
-                                                fontWeight="500"
-                                                lineHeight="normal"
-                                                display="flex"
-                                                flexShrink="0"
-                                                color={theme.colors.black}
-                                                children={schedule.scheduleName}
-                                            />
-
-                                            <Span
-                                                textAlign="left"
-                                                fontSize="12px"
-                                                fontStyle="normal"
-                                                fontWeight="500"
-                                                lineHeight="14px"
-                                                letterSpacing="0.75px"
-                                                display="flex"
-                                                flexShrink="0"
-                                                color={theme.colors.babyBlue}
-                                                children={formatDateRange(
-                                                    schedule.startDate,
-                                                    schedule.endDate
-                                                )}
-                                            />
-                                        </Container>
-                                        <BsThreeDotsVertical
-                                            size={25}
-                                            onClick={() => {
-                                                setSelectedCardId(schedule.id);
-                                                setModalIsOpen(true);
-                                            }}
-                                        />
-
-                                        {modalIsOpen &&
-                                            selectedCardId === schedule.id && (
-                                                <Modal
-                                                    isOpen={modalIsOpen}
-                                                    onRequestClose={() =>
-                                                        setModalIsOpen(false)
-                                                    }
-                                                    style={modalStyle}
-                                                >
-                                                    <Container
-                                                        className="modalHeader"
-                                                        style={modalHeaderStyle}
-                                                    >
-                                                        Ações
-                                                        <AiOutlineClose
-                                                            size={25}
-                                                            onClick={() =>
-                                                                setModalIsOpen(
-                                                                    false
-                                                                )
-                                                            }
-                                                        />
-                                                    </Container>
-
-                                                    <Line
-                                                        color={
-                                                            theme.colors
-                                                                .lightGray2
-                                                        }
-                                                        height="fit-content"
-                                                        width="100%"
-                                                    />
-
-                                                    <Container
-                                                        display="flex"
-                                                        flexDirection="column"
-                                                        alignItems="flex-start"
-                                                        height="50%"
-                                                    >
-                                                        <Button
-                                                            width="100%"
-                                                            color={
-                                                                theme.colors
-                                                                    .black
-                                                            }
-                                                            backgroundColor={
-                                                                theme.colors
-                                                                    .white
-                                                            }
-                                                            children="Editar conversa 1:1"
-                                                            onClick={() =>
-                                                                handleEditModal()
-                                                            }
-                                                        />
-
-                                                        <Line
-                                                            color={
-                                                                theme.colors
-                                                                    .lightGray2
-                                                            }
-                                                            height="fit-content"
-                                                            width="100%"
-                                                        />
-
-                                                        <Button
-                                                            width="100%"
-                                                            color={
-                                                                theme.colors.red
-                                                            }
-                                                            backgroundColor={
-                                                                theme.colors
-                                                                    .white
-                                                            }
-                                                            children="Excluir conversa 1:1"
-                                                            onClick={() =>
-                                                                handleDeleteModal()
-                                                            }
-                                                        />
-
-                                                        <Line
-                                                            color={
-                                                                theme.colors
-                                                                    .lightGray2
-                                                            }
-                                                            height="fit-content"
-                                                            width="100%"
-                                                        />
-                                                    </Container>
-                                                </Modal>
-                                            )}
-
-                                        {deleteModalIsOpen &&
-                                            selectedCardId === schedule.id && (
-                                                <Modal
-                                                    style={modalStyle}
-                                                    isOpen={deleteModalIsOpen}
-                                                    onRequestClose={() =>
-                                                        setDeleteModalIsOpen(
-                                                            false
-                                                        )
-                                                    }
-                                                >
-                                                    <Container
-                                                        className="deleteModalHeader"
-                                                        style={modalHeaderStyle}
-                                                    >
-                                                        <AiOutlineClose
-                                                            size={25}
-                                                            onClick={() =>
-                                                                setDeleteModalIsOpen(
-                                                                    false
-                                                                )
-                                                            }
-                                                        />
-                                                        Excluir conversa 1:1
-                                                        <Button
-                                                            color={
-                                                                theme.colors.red
-                                                            }
-                                                            backgroundColor={
-                                                                theme.colors
-                                                                    .lightRed
-                                                            }
-                                                            borderRadius="50px"
-                                                            fontSize="15px"
-                                                            fontStyle="normal"
-                                                            fontWeight="500"
-                                                            lineHeight="normal"
-                                                            children="Excluir"
-                                                        />
-                                                    </Container>
-
-                                                    <Line
-                                                        color={
-                                                            theme.colors
-                                                                .lightGray2
-                                                        }
-                                                        height="fit-content"
-                                                        width="100%"
-                                                    />
-
-                                                    <Container
-                                                        display="flex"
-                                                        justifyContent="center"
-                                                        flexDirection="column"
-                                                        alignItems="center"
-                                                        height="50%"
-                                                        color={
-                                                            theme.colors.black
-                                                        }
-                                                        textAlign="center"
-                                                        flexShrink="0"
-                                                        fontSize="18px"
-                                                        fontStyle="normal"
-                                                        lineHeight="28px"
-                                                    >
-                                                        Tem certeza que deseja
-                                                        excluir
-                                                        <Span fontWeight="600">
-                                                            {
-                                                                schedule.scheduleName
-                                                            }
-                                                            ?
-                                                        </Span>
-                                                    </Container>
-                                                </Modal>
-                                            )}
-
-                                        {editModalIsOpen &&
-                                            selectedCardId === schedule.id && (
-                                                <Modal
-                                                    style={{
-                                                        content: {
-                                                            ...modalStyle.content,
-                                                            height: "100%",
-                                                            borderRadius:
-                                                                "none",
-                                                        },
-                                                    }}
-                                                    isOpen={editModalIsOpen}
-                                                    onRequestClose={() =>
-                                                        handleEditModal()
-                                                    }
-                                                >
-                                                    <Container
-                                                        className="editModalHeader"
-                                                        style={{
-                                                            ...modalHeaderStyle,
-                                                            height: "5%",
-                                                        }}
-                                                        textAlign="left"
-                                                    >
-                                                        <AiOutlineClose
-                                                            size={25}
-                                                            onClick={() =>
-                                                                setEditModalIsOpen(
-                                                                    false
-                                                                )
-                                                            }
-                                                        />
-                                                        Editar conversa 1:1
-                                                        <Button
-                                                            color={
-                                                                theme.colors
-                                                                    .white
-                                                            }
-                                                            backgroundColor={
-                                                                theme.colors
-                                                                    .babyBlue
-                                                            }
-                                                            borderRadius="50px"
-                                                            fontSize="15px"
-                                                            fontStyle="normal"
-                                                            fontWeight="500"
-                                                            lineHeight="normal"
-                                                            children="Editar"
-                                                        />
-                                                    </Container>
-
-                                                    <Line
-                                                        color={
-                                                            theme.colors
-                                                                .lightGray2
-                                                        }
-                                                        height="fit-content"
-                                                        width="100%"
-                                                    />
-
-                                                    <Container
-                                                        className="editModalBody"
-                                                        width="100%"
-                                                        display="flex"
-                                                        flexDirection="column"
-                                                        alignItems="flex-start"
-                                                        gap="20px"
-                                                    >
-                                                        <Label
-                                                            style={labelStyle}
-                                                            htmlFor="scheduleName"
-                                                            children={
-                                                                "Nome da 1:1"
-                                                            }
-                                                        />
-                                                        <Input
-                                                            style={inputStyle}
-                                                            type="text"
-                                                            name="scheduleName"
-                                                            onChange={(event) =>
-                                                                setNewScheduleName(
-                                                                    event.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            value={
-                                                                newScheduleName !==
-                                                                undefined
-                                                                    ? newScheduleName
-                                                                    : schedule.scheduleName
-                                                            }
-                                                        />
-
-                                                        <Container
-                                                            width="100%"
-                                                            display="flex"
-                                                            justifyContent="space-between"
-                                                        >
-                                                            <Container
-                                                                display="flex"
-                                                                flexDirection="column"
-                                                                justifyContent="stretch"
-                                                                width="45%"
-                                                                flexShrink="0"
-                                                            >
-                                                                <Label
-                                                                    style={
-                                                                        labelStyle
-                                                                    }
-                                                                    htmlFor="scheduleDate"
-                                                                    children={
-                                                                        "Data da 1:1"
-                                                                    }
-                                                                />
-                                                                <Input
-                                                                    style={{
-                                                                        ...inputStyle,
-                                                                    }}
-                                                                    type="date"
-                                                                    name="scheduleDate"
-                                                                    onChange={(
-                                                                        event
-                                                                    ) =>
-                                                                        setNewScheduleDate(
-                                                                            event
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    // ponto de atenção
-                                                                    value={
-                                                                        newScheduleDate !==
-                                                                        undefined
-                                                                            ? newScheduleDate
-                                                                            : schedule.scheduleStartDate
-                                                                    }
-                                                                />
-                                                            </Container>
-
-                                                            <Container
-                                                                display="flex"
-                                                                flexDirection="column"
-                                                                justifyContent="stretch"
-                                                                width="45%"
-                                                                flexShrink="0"
-                                                            >
-                                                                <Label
-                                                                    style={
-                                                                        labelStyle
-                                                                    }
-                                                                    htmlFor="scheduleHour"
-                                                                    children={
-                                                                        "Horário da 1:1"
-                                                                    }
-                                                                />
-                                                                <Input
-                                                                    style={{
-                                                                        ...inputStyle,
-                                                                        minWidth:
-                                                                            "50%",
-                                                                    }}
-                                                                    type="time"
-                                                                    name="scheduleHour"
-                                                                    onChange={(
-                                                                        event
-                                                                    ) =>
-                                                                        setNewScheduleHour(
-                                                                            event
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    // ponto de atenção
-                                                                    value={
-                                                                        newScheduleHour !==
-                                                                        undefined
-                                                                            ? newScheduleHour
-                                                                            : schedule.scheduleStartDate
-                                                                    }
-                                                                />
-                                                            </Container>
-                                                        </Container>
-
-                                                        <Label
-                                                            style={labelStyle}
-                                                            htmlFor="guest"
-                                                            children={
-                                                                "Convidado"
-                                                            }
-                                                        />
-
-                                                        <Select
-                                                            style={inputStyle}
-                                                            name="guest"
-                                                            onChange={(event) =>
-                                                                setNewGuest(
-                                                                    event.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            value={newGuest}
-                                                        >
-                                                            {users
-                                                                .filter(
-                                                                    (user) =>
-                                                                        user.name !==
-                                                                        schedule
-                                                                            .owner
-                                                                            .name
-                                                                )
-                                                                .map((user) => (
-                                                                    <option
-                                                                        key={
-                                                                            user.id
-                                                                        }
-                                                                        value={
-                                                                            user.name
-                                                                        }
-                                                                        defaultValue={
-                                                                            user.name ===
-                                                                            schedule
-                                                                                .guest
-                                                                                .name
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            user.name
-                                                                        }
-                                                                    </option>
-                                                                ))}
-                                                        </Select>
-
-                                                        <Span
-                                                            fontSize="18px"
-                                                            fontStyle="normal"
-                                                            fontWeight="500"
-                                                            lineHeight="normal"
-                                                            color={
-                                                                theme.colors
-                                                                    .black
-                                                            }
-                                                        >
-                                                            Talking points do
-                                                            1:1
-                                                        </Span>
-
-                                                        {schedule.talkingPoints.map(
-                                                            (
-                                                                talkingPoint,
-                                                                index
-                                                            ) => (
-                                                                <Container
-                                                                    className="talkingPoint"
-                                                                    width="100%"
-                                                                    height="fit-content"
-                                                                    display="flex"
-                                                                    alignItems="center"
-                                                                    justifyContent="space-between"
-                                                                    flexDirection="column"
-                                                                >
-                                                                    <Container
-                                                                        minWidth="100%%"
-                                                                        paddingBottom="20px"
-                                                                        display="flex"
-                                                                        alignItems="center"
-                                                                        justifyContent="space-between"
-                                                                    >
-                                                                        <div
-                                                                            style={{
-                                                                                color: "black",
-                                                                            }}
-                                                                        >
-                                                                            ICON
-                                                                        </div>
-
-                                                                        <Container width="80%">
-                                                                            <Label
-                                                                                style={
-                                                                                    labelStyle
-                                                                                }
-                                                                                htmlFor={`scheduleTopic_${index}`}
-                                                                                children={
-                                                                                    "Nome do talking point"
-                                                                                }
-                                                                            />
-
-                                                                            <Input
-                                                                                style={
-                                                                                    inputStyle
-                                                                                }
-                                                                                type="text"
-                                                                                name={`scheduleTopic_${index}`}
-                                                                                onChange={(
-                                                                                    event
-                                                                                ) =>
-                                                                                    updateTalkingPoint(
-                                                                                        index,
-                                                                                        event
-                                                                                            .target
-                                                                                            .value
-                                                                                    )
-                                                                                }
-                                                                                value={
-                                                                                    talkingPoints[
-                                                                                        index
-                                                                                    ] !==
-                                                                                    undefined
-                                                                                        ? talkingPoints[
-                                                                                              index
-                                                                                          ]
-                                                                                        : talkingPoint.description !==
-                                                                                          undefined
-                                                                                        ? talkingPoint.description
-                                                                                        : talkingPoint
-                                                                                }
-                                                                            />
-                                                                        </Container>
-                                                                    </Container>
-
-                                                                    <Line
-                                                                        color={
-                                                                            theme
-                                                                                .colors
-                                                                                .lightGray2
-                                                                        }
-                                                                        height="fit-content"
-                                                                        width="100%"
-                                                                    />
-                                                                </Container>
-                                                            )
-                                                        )}
-
-                                                        {newTalkingPoints.map(
-                                                            (
-                                                                newTalkingPoint,
-                                                                index
-                                                            ) => (
-                                                                <Container
-                                                                    className="talkingPoint"
-                                                                    width="100%"
-                                                                    height="fit-content"
-                                                                    display="flex"
-                                                                    alignItems="center"
-                                                                    justifyContent="space-between"
-                                                                    flexDirection="column"
-                                                                    key={index}
-                                                                >
-                                                                    <Container
-                                                                        minWidth="100%%"
-                                                                        paddingBottom="20px"
-                                                                        display="flex"
-                                                                        alignItems="center"
-                                                                        justifyContent="space-between"
-                                                                    >
-                                                                        <div
-                                                                            style={{
-                                                                                color: "black",
-                                                                            }}
-                                                                        >
-                                                                            ICON
-                                                                        </div>
-
-                                                                        <Container width="80%">
-                                                                            <Label
-                                                                                style={
-                                                                                    labelStyle
-                                                                                }
-                                                                                htmlFor={`scheduleTopic_${index}`}
-                                                                                children={
-                                                                                    "Nome do talking point"
-                                                                                }
-                                                                            />
-
-                                                                            <Input
-                                                                                style={
-                                                                                    inputStyle
-                                                                                }
-                                                                                placeholder="Insira um nome"
-                                                                                type="text"
-                                                                                name={`scheduleTopic_${index}`}
-                                                                            />
-                                                                        </Container>
-                                                                    </Container>
-
-                                                                    <Line
-                                                                        color={
-                                                                            theme
-                                                                                .colors
-                                                                                .lightGray2
-                                                                        }
-                                                                        height="fit-content"
-                                                                        width="100%"
-                                                                    />
-                                                                </Container>
-                                                            )
-                                                        )}
-
-                                                        <Button
-                                                            fontSize="16px"
-                                                            fontStyle="normal"
-                                                            fontWeight="500"
-                                                            lineHeight="165%"
-                                                            letterSpacing="0.08px"
-                                                            color={
-                                                                theme.colors
-                                                                    .babyBlue
-                                                            }
-                                                            backgroundColor={
-                                                                theme.colors
-                                                                    .white
-                                                            }
-                                                            children={
-                                                                "+ Adicionar novo ponto"
-                                                            }
-                                                            onClick={
-                                                                addNewTalkingPoints
-                                                            }
-                                                        />
-                                                    </Container>
-                                                </Modal>
-                                            )}
-                                    </Container>
-
-                                    <Line
-                                        color={theme.colors.lightGray2}
-                                        height="fit-content"
-                                        width="100%"
-                                    />
-
-                                    <Container
-                                        className="cardBody"
-                                        width="100%"
-                                        height="70%"
-                                        display="flex"
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        flexDirection="column"
-                                        gap="15px"
-                                    >
-                                        <Container
-                                            className="ownerContainer"
-                                            width="100%"
-                                            display="flex"
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            fontSize="14px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="19px"
-                                            color={theme.colors.darkGray}
-                                        >
-                                            Organizador
-                                            <Span
-                                                width="50%"
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="flex-end"
-                                                lineHeight="normal"
-                                                color={theme.colors.black}
-                                            >
-                                                <img
-                                                    src="my img"
-                                                    style={{
-                                                        marginRight: "10px",
-                                                    }}
-                                                />
-                                                {schedule.owner.name}
-                                            </Span>
-                                        </Container>
-
-                                        <Container
-                                            className="guestContainer"
-                                            width="100%"
-                                            display="flex"
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            fontSize="14px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="19px"
-                                            color={theme.colors.darkGray}
-                                        >
-                                            Convidado
-                                            <Span
-                                                width="50%"
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="flex-end"
-                                                color={theme.colors.black}
-                                                lineHeight="normal"
-                                            >
-                                                <img
-                                                    src="my img"
-                                                    style={{
-                                                        marginRight: "10px",
-                                                    }}
-                                                />
-                                                {schedule.guest.name}
-                                            </Span>
-                                        </Container>
-                                    </Container>
-                                </Card>
-                            ))}
+                            {activeScheduleList === "upcoming"
+                                ? upcomingSchedules.map((schedule) => (
+                                      <Schedules
+                                          cleanCache={cleanCache}
+                                          schedule={schedule}
+                                      />
+                                  ))
+                                : pastSchedules.map((schedule) => (
+                                      <Schedules
+                                          cleanCache={cleanCache}
+                                          schedule={schedule}
+                                      />
+                                  ))}
                         </Container>
                     </Container>
 
@@ -1381,220 +664,231 @@ const Dashboard = () => {
                             setCreateScheduleModalIsOpen(false)
                         }
                     >
-                        <Container
-                            className="createScheduleModalHeader"
-                            style={{
-                                ...modalHeaderStyle,
-                                height: "5%",
-                            }}
-                            textAlign="left"
-                        >
-                            <AiOutlineClose
-                                size={25}
-                                onClick={() => handleCloseCreateScheduleModal()}
-                            />
-                            Nova conversa 1:1
-                            <Button
-                                color={theme.colors.white}
-                                backgroundColor={theme.colors.babyBlue}
-                                borderRadius="50px"
-                                fontSize="15px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                                children="Criar"
-                            />
-                        </Container>
+                        <Form onSubmit={handleCreateSchedule}>
+                            <Container
+                                className="createScheduleModalHeader"
+                                style={{
+                                    ...modalHeaderStyle,
+                                    height: "50px",
+                                }}
+                                textAlign="left"
+                            >
+                                <AiOutlineClose
+                                    size={25}
+                                    onClick={() =>
+                                        handleCloseCreateScheduleModal()
+                                    }
+                                />
+                                Nova conversa 1:1
+                                <Button
+                                    color={theme.colors.white}
+                                    backgroundColor={theme.colors.babyBlue}
+                                    borderRadius="50px"
+                                    fontSize="15px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    children="Criar"
+                                    type="submit"
+                                />
+                            </Container>
 
-                        <Line
-                            color={theme.colors.lightGray2}
-                            height="fit-content"
-                            width="100%"
-                        />
-
-                        <Container
-                            className="editModalBody"
-                            width="100%"
-                            display="flex"
-                            flexDirection="column"
-                            alignItems="flex-start"
-                            gap="20px"
-                        >
-                            <Label
-                                style={labelStyle}
-                                htmlFor="scheduleName"
-                                children={"Nome da 1:1"}
-                            />
-                            <Input
-                                style={inputStyle}
-                                type="text"
-                                name="scheduleName"
-                                placeholder="Insira o nome da 1:1"
-                                onChange={(event) =>
-                                    setNewScheduleName(event.target.value)
-                                }
-                                value={newScheduleName}
+                            <Line
+                                color={theme.colors.lightGray2}
+                                height="fit-content"
+                                width="100%"
                             />
 
                             <Container
+                                className="editModalBody"
                                 width="100%"
                                 display="flex"
-                                justifyContent="space-between"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                gap="20px"
                             >
-                                <Container
-                                    display="flex"
-                                    flexDirection="column"
-                                    justifyContent="stretch"
-                                    width="45%"
-                                    flexShrink="0"
-                                >
-                                    <Label
-                                        style={labelStyle}
-                                        htmlFor="scheduleDate"
-                                        children={"Data da 1:1"}
-                                    />
-                                    <Input
-                                        style={{
-                                            ...inputStyle,
-                                        }}
-                                        type="date"
-                                        name="scheduleDate"
-                                        onChange={(event) =>
-                                            setNewScheduleDate(
-                                                event.target.value
-                                            )
-                                        }
-                                        value={newScheduleDate}
-                                    />
-                                </Container>
+                                <Label
+                                    style={labelStyle}
+                                    htmlFor="scheduleName"
+                                    children={"Nome da 1:1"}
+                                />
+                                <Input
+                                    style={inputStyle}
+                                    type="text"
+                                    name="scheduleName"
+                                    placeholder="Insira o nome da 1:1"
+                                    onChange={(event) =>
+                                        setNewScheduleName(event.target.value)
+                                    }
+                                    value={newScheduleName}
+                                />
 
                                 <Container
-                                    display="flex"
-                                    flexDirection="column"
-                                    justifyContent="stretch"
-                                    width="45%"
-                                    flexShrink="0"
-                                >
-                                    <Label
-                                        style={labelStyle}
-                                        htmlFor="scheduleHour"
-                                        children={"Horário da 1:1"}
-                                    />
-                                    <Input
-                                        style={{
-                                            ...inputStyle,
-                                            minWidth: "50%",
-                                        }}
-                                        type="time"
-                                        name="scheduleHour"
-                                        onChange={(event) =>
-                                            setNewScheduleHour(
-                                                event.target.value
-                                            )
-                                        }
-                                        value={newScheduleHour}
-                                    />
-                                </Container>
-                            </Container>
-
-                            <Label
-                                style={labelStyle}
-                                htmlFor="guest"
-                                children={"Convidado"}
-                            />
-
-                            <Select
-                                style={inputStyle}
-                                name="guest"
-                                onChange={(event) =>
-                                    setNewGuest(event.target.value)
-                                }
-                                value={newGuest}
-                            >
-                                <option value="">Selecione</option>
-                                {users.map((user) => (
-                                    <option key={user.id} value={user.name}>
-                                        {user.name}
-                                    </option>
-                                ))}
-                            </Select>
-
-                            <Span
-                                fontSize="18px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                                color={theme.colors.black}
-                            >
-                                Talking points do 1:1
-                            </Span>
-
-                            {newTalkingPoints.map((talkingPoint, index) => (
-                                <Container
-                                    className="talkingPoint"
                                     width="100%"
-                                    height="fit-content"
                                     display="flex"
-                                    alignItems="center"
                                     justifyContent="space-between"
-                                    flexDirection="column"
                                 >
                                     <Container
-                                        minWidth="100%%"
-                                        paddingBottom="20px"
+                                        display="flex"
+                                        flexDirection="column"
+                                        justifyContent="stretch"
+                                        width="45%"
+                                        flexShrink="0"
+                                    >
+                                        <Label
+                                            style={labelStyle}
+                                            htmlFor="scheduleDate"
+                                            children={"Data da 1:1"}
+                                        />
+                                        <Input
+                                            style={{
+                                                ...inputStyle,
+                                            }}
+                                            type="date"
+                                            name="scheduleDate"
+                                            onChange={(event) =>
+                                                setNewScheduleDate(
+                                                    event.target.value
+                                                )
+                                            }
+                                            value={newScheduleDate}
+                                        />
+                                    </Container>
+
+                                    <Container
+                                        display="flex"
+                                        flexDirection="column"
+                                        justifyContent="stretch"
+                                        width="45%"
+                                        flexShrink="0"
+                                    >
+                                        <Label
+                                            style={labelStyle}
+                                            htmlFor="scheduleHour"
+                                            children={"Horário da 1:1"}
+                                        />
+                                        <Input
+                                            style={{
+                                                ...inputStyle,
+                                                minWidth: "50%",
+                                            }}
+                                            type="time"
+                                            name="scheduleHour"
+                                            onChange={(event) =>
+                                                setNewScheduleHour(
+                                                    event.target.value
+                                                )
+                                            }
+                                            value={newScheduleHour}
+                                        />
+                                    </Container>
+                                </Container>
+
+                                <Label
+                                    style={labelStyle}
+                                    htmlFor="guest"
+                                    children={"Convidado"}
+                                />
+                                <Select
+                                    style={inputStyle}
+                                    name="guest"
+                                    onChange={(event) =>
+                                        setNewGuest(event.target.value)
+                                    }
+                                    value={newGuest}
+                                >
+                                    <option value="">Selecione</option>
+                                    {users.map((user) => (
+                                        <option
+                                            key={user.id}
+                                            value={user.email}
+                                        >
+                                            {user.name}
+                                        </option>
+                                    ))}
+                                </Select>
+
+                                <Span
+                                    fontSize="18px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    color={theme.colors.black}
+                                >
+                                    Talking points do 1:1
+                                </Span>
+
+                                {newTalkingPoints.map((talkingPoint, index) => (
+                                    <Container
+                                        className="talkingPoint"
+                                        width="100%"
+                                        height="fit-content"
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="space-between"
+                                        flexDirection="column"
+                                        key={index}
                                     >
-                                        <div style={{ color: "black" }}>
-                                            ICON
-                                        </div>
+                                        <Container
+                                            minWidth="100%%"
+                                            paddingBottom="20px"
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                        >
+                                            <div style={{ color: "black" }}>
+                                                ICON
+                                            </div>
 
-                                        <Container width="80%">
-                                            <Label
-                                                style={labelStyle}
-                                                htmlFor={`scheduleTopic_${index}`}
-                                                children={
-                                                    "Nome do talking point"
-                                                }
-                                            />
+                                            <Container width="80%">
+                                                <Label
+                                                    style={labelStyle}
+                                                    htmlFor={`scheduleTopic_${index}`}
+                                                    children={
+                                                        "Nome do talking point"
+                                                    }
+                                                />
 
-                                            <Input
-                                                style={inputStyle}
-                                                placeholder="Insira um nome"
-                                                type="text"
-                                                name={`scheduleTopic_${index}`}
-                                                onChange={(event) =>
-                                                    updateTalkingPoint(
-                                                        index,
-                                                        event.target.value
-                                                    )
-                                                }
-                                                value={talkingPoint.description}
-                                            />
+                                                <Input
+                                                    style={inputStyle}
+                                                    placeholder="Insira um nome"
+                                                    type="text"
+                                                    name={`scheduleTopic_${index}`}
+                                                    onChange={(event) =>
+                                                        updateTalkingPoint(
+                                                            index,
+                                                            event.target.value
+                                                        )
+                                                    }
+                                                    value={
+                                                        talkingPoint.description
+                                                    }
+                                                />
+                                            </Container>
                                         </Container>
+
+                                        <Line
+                                            color={theme.colors.lightGray2}
+                                            height="fit-content"
+                                            width="100%"
+                                        />
                                     </Container>
+                                ))}
 
-                                    <Line
-                                        color={theme.colors.lightGray2}
-                                        height="fit-content"
-                                        width="100%"
-                                    />
-                                </Container>
-                            ))}
-
-                            <Button
-                                fontSize="16px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="165%"
-                                letterSpacing="0.08px"
-                                color={theme.colors.babyBlue}
-                                backgroundColor={theme.colors.white}
-                                children={"+ Adicionar novo ponto"}
-                                onClick={addNewTalkingPoints}
-                            />
-                        </Container>
+                                <Button
+                                    fontSize="16px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="165%"
+                                    letterSpacing="0.08px"
+                                    color={theme.colors.babyBlue}
+                                    backgroundColor={theme.colors.white}
+                                    children={"+ Adicionar novo ponto"}
+                                    onClick={addNewTalkingPoints}
+                                    type="button"
+                                />
+                            </Container>
+                        </Form>
                     </Modal>
                 </Container>
             )}

@@ -13,3 +13,12 @@ export const formatDateRange = (startDate, endDate) => {
 
     return formattedDateTimeRange;
 };
+
+export const convertToTimeStamp = (date, hour) => {
+    const startDateTime = new Date(`${date}T${hour}:00`);
+    const startDate = startDateTime.getTime();
+    const endDateTime = new Date(startDateTime.getTime() + 30 * 60000);
+    const endDate = endDateTime.getTime();
+
+    return { startDate, endDate };
+};
