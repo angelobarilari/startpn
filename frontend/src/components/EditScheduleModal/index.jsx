@@ -21,11 +21,7 @@ import { updateSchedule } from "../../services/api";
 
 import { AiOutlineClose } from "react-icons/ai";
 
-const EditModal = ({
-    isOpen,
-    onClose,
-    schedule,
-}) => {
+const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const { users } = useContext(UsersContext);
 
     const [newScheduleName, setNewScheduleName] = useState(undefined);
@@ -64,8 +60,6 @@ const EditModal = ({
 
         updateSchedule(data, schedule.id);
     };
-
-
 
     return (
         <Modal
@@ -316,4 +310,4 @@ const EditModal = ({
     );
 };
 
-export default EditModal;
+export default EditScheduleModal;

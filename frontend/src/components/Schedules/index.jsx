@@ -4,8 +4,8 @@ import Card from "../../components/Card/Index";
 import Button from "../../components/Button";
 import Line from "../../components/Line";
 import Span from "../../components/Span";
-import DeleteModal from "../DeleteModal";
-import EditModal from "../EditModal";
+import DeleteScheduleModal from "../DeleteScheduleModal";
+import EditScheduleModal from "../EditScheduleModal";
 import Modal from "react-modal";
 
 import { theme } from "../../global/styles/theme";
@@ -17,13 +17,14 @@ import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiCircle } from "react-icons/bi";
 
-const Schedule = ({ cleanCache, schedule }) => {
+const Schedule = ({ schedule }) => {
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [checkedCards, setCheckedCards] = useState([]);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    const [editScheduleModal, setEditScheduleModal] = useState(false);
+    const [deleteScheduleModalIsOpen, setScheduleDeleteModalIsOpen] =
+        useState(false);
 
     const handleCheckClick = (id) => {
         if (checkedCards.includes(id))
@@ -33,14 +34,12 @@ const Schedule = ({ cleanCache, schedule }) => {
 
     const handleDeleteModal = () => {
         setModalIsOpen(false);
-        setDeleteModalIsOpen(true);
-        cleanCache();
+        setScheduleDeleteModalIsOpen(true);
     };
 
     const handleEditModal = () => {
         setModalIsOpen(false);
-        setEditModalIsOpen(true);
-        cleanCache();
+        setEditScheduleModal(true);
     };
 
     return (
@@ -270,18 +269,18 @@ const Schedule = ({ cleanCache, schedule }) => {
                 </Modal>
             )}
 
-            {editModalIsOpen && selectedCardId && (
-                <EditModal
-                    isOpen={editModalIsOpen}
-                    onClose={() => setEditModalIsOpen(false)}
+            {editScheduleModal && selectedCardId && (
+                <EditScheduleModal
+                    isOpen={editScheduleModal}
+                    onClose={() => setEditScheduleModal(false)}
                     schedule={schedule}
                 />
             )}
 
-            {deleteModalIsOpen && selectedCardId && (
-                <DeleteModal
-                    isOpen={deleteModalIsOpen}
-                    onClose={() => setDeleteModalIsOpen(false)}
+            {deleteScheduleModalIsOpen && selectedCardId && (
+                <DeleteScheduleModal
+                    isOpen={deleteScheduleModalIsOpen}
+                    onClose={() => setScheduleDeleteModalIsOpen(false)}
                     schedule={schedule}
                 />
             )}

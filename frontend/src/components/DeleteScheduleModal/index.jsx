@@ -1,10 +1,10 @@
 import React from "react";
-import Modal from "react-modal";
 import Container from "../Container";
 import Button from "../Button";
 import Line from "../Line";
 import Span from "../Span";
 import Form from "../Form";
+import Modal from "react-modal";
 
 import { theme } from "../../global/styles/theme";
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
@@ -13,10 +13,10 @@ import { deleteSchedule } from "../../services/api";
 
 import { AiOutlineClose } from "react-icons/ai";
 
-const DeleteModal = ({ isOpen, onClose, schedule }) => {
+const DeleteScheduleModal = ({ isOpen, onClose, schedule }) => {
     const handleDeleteSchedule = () => {
-        deleteSchedule(schedule.id)
-    }
+        deleteSchedule(schedule.id);
+    };
 
     return (
         <Modal style={modalStyle} isOpen={isOpen} onRequestClose={onClose}>
@@ -67,4 +67,4 @@ const DeleteModal = ({ isOpen, onClose, schedule }) => {
     );
 };
 
-export default DeleteModal;
+export default DeleteScheduleModal;

@@ -19,7 +19,7 @@ export const modalStyle = {
 export const modalHeaderStyle = {
     color: theme.colors.black,
     width: "100%",
-    height: "20%",
+    height: "50px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
