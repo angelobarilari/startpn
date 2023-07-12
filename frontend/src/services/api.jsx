@@ -39,7 +39,7 @@ export const getSchedules = async () => {
 
 export const createSchedule = async (data) => {
     api.post("/schedules", data)
-        .then((res) => console.log(res.data))
+        .then((res) => window.location.reload())
         .catch((err) => console.log(err.response.data));
 };
 

@@ -10,14 +10,14 @@ import Input from "../Input";
 import Select from "../Select";
 
 import { UsersContext } from "../../context/users";
+import { updateSchedule } from "../../services/api";
+import { convertToTimeStamp } from "../../utils";
 
 import { theme } from "../../global/styles/theme";
 
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
-
-import { updateSchedule } from "../../services/api";
 
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -31,6 +31,26 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
 
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
 
+    const handleEditSchedule = (event) => {
+        event.preventDefault();
+
+        const formatedDateandHour = convertToTimeStamp(
+            newScheduleDate,
+            newScheduleHour
+        );
+
+        const data = {
+            scheduleName: newScheduleName,
+            startDate: formatedDateandHour.startDate,
+            endDate: formatedDateandHour.endDate,
+            guestEmail: newGuest,
+            talkingPoints,
+        };
+
+        updateSchedule(data, schedule.id);
+        onClose();
+    };
+
     const updateTalkingPoint = (index, value) => {
         const updatedTalkingPoints = [...talkingPoints];
 
@@ -42,23 +62,6 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const addTalkingPoint = () => {
         const updatedTalkingPoints = [...talkingPoints, ""];
         setTalkingPoints(updatedTalkingPoints);
-    };
-
-    const handleEditSchedule = (event) => {
-        // console.log(newScheduleDate)
-        // console.log(newScheduleHour)
-
-        const data = {
-            scheduleName: newScheduleName,
-            // startDate: 1688774788149,
-            // endDate: 1688774688149,
-            guestEmail: newGuest,
-            talkingPoints,
-        };
-
-        event.preventDefault();
-
-        updateSchedule(data, schedule.id);
     };
 
     return (
@@ -303,6 +306,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                         children="+ Adicionar novo ponto"
                         onClick={addTalkingPoint}
                         type="button"
+                        padding="10px 0px"
                     />
                 </Container>
             </Form>
