@@ -9,11 +9,13 @@ import Form from "../Form";
 import Input from "../Input";
 import Select from "../Select";
 
+import { UsersContext } from "../../context/users";
+
 import { theme } from "../../global/styles/theme";
+
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
-import { UsersContext } from "../../context/users";
 
 import { updateSchedule } from "../../services/api";
 

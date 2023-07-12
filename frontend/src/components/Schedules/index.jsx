@@ -13,10 +13,9 @@ import { formatDateRange } from "../../utils";
 
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 
-import { BiCircle } from "react-icons/bi";
 import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
-import { updateSchedule } from "../../services/api";
+import { BiCircle } from "react-icons/bi";
 
 const Schedule = ({ cleanCache, schedule }) => {
     const [selectedCardId, setSelectedCardId] = useState(null);
