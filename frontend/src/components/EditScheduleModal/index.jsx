@@ -11,7 +11,7 @@ import Select from "../Select";
 
 import { UsersContext } from "../../context/users";
 import { updateSchedule } from "../../services/api";
-import { convertToTimeStamp } from "../../utils";
+import { convertToTimeStamp, formatDate, formatTime } from "../../utils";
 
 import { theme } from "../../global/styles/theme";
 
@@ -20,35 +20,35 @@ import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
 
 import { AiOutlineClose } from "react-icons/ai";
+import { FiTrash2 } from "react-icons/fi"
 
 const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const { users } = useContext(UsersContext);
 
     const [newScheduleName, setNewScheduleName] = useState(undefined);
-    const [newScheduleDate, setNewScheduleDate] = useState(undefined);
-    const [newScheduleHour, setNewScheduleHour] = useState(undefined);
+    const [newScheduleDate, setNewScheduleDate] = useState("");
+    const [newScheduleHour, setNewScheduleHour] = useState("");
     const [newGuest, setNewGuest] = useState(undefined);
 
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
 
     const handleEditSchedule = (event) => {
-        event.preventDefault();
+        event.preventDefault()
 
-        const formatedDateandHour = convertToTimeStamp(
-            newScheduleDate,
-            newScheduleHour
-        );
+        const newDate = newScheduleDate || formatDate(schedule.startDate);
+        const newHour = newScheduleHour || formatTime(schedule.startDate);
+      
+        const { startDate, endDate } = convertToTimeStamp(newDate, newHour);
 
-        const data = {
+        const updatedSchedule = {
             scheduleName: newScheduleName,
-            startDate: formatedDateandHour.startDate,
-            endDate: formatedDateandHour.endDate,
+            startDate,
+            endDate,
             guestEmail: newGuest,
             talkingPoints,
         };
-
-        updateSchedule(data, schedule.id);
-        onClose();
+      
+        updateSchedule(updatedSchedule, schedule.id);
     };
 
     const updateTalkingPoint = (index, value) => {
@@ -64,6 +64,11 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
         setTalkingPoints(updatedTalkingPoints);
     };
 
+    const removeTalkingPoint = (index) => {
+        const updatedTalkingPoints = talkingPoints.filter((_, i) => i !== index);
+        setTalkingPoints(updatedTalkingPoints);
+      };
+      
     return (
         <Modal
             style={{
@@ -101,7 +106,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                 </Container>
 
                 <Line
-                    color={theme.colors.lightGray2}
+                    borderColor={theme.colors.lightGray2}
                     height="fit-content"
                     width="100%"
                 />
@@ -158,9 +163,9 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                     setNewScheduleDate(event.target.value)
                                 }
                                 value={
-                                    newScheduleDate !== undefined
-                                        ? newScheduleDate
-                                        : schedule.startDate
+                                    newScheduleDate == undefined
+                                        ? formatDate(schedule.startDate)
+                                        : newScheduleDate
                                 }
                             />
                         </Container>
@@ -188,9 +193,9 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                     setNewScheduleHour(event.target.value)
                                 }
                                 value={
-                                    newScheduleHour !== undefined
-                                        ? newScheduleHour
-                                        : "15:10"
+                                    newScheduleHour == undefined
+                                        ? formatTime(schedule.startDate)
+                                        : newScheduleHour
                                 }
                             />
                         </Container>
@@ -253,7 +258,6 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                         >
                             <Container
                                 minWidth="100%%"
-                                paddingBottom="20px"
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="space-between"
@@ -266,7 +270,9 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                     ICON
                                 </div>
 
-                                <Container width="80%">
+                                <Container 
+                                paddingBottom="20px"
+                                width="80%">
                                     <Label
                                         style={labelStyle}
                                         htmlFor={`scheduleTopic_${index}`}
@@ -285,12 +291,19 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                         value={talkingPoint.description}
                                     />
                                 </Container>
+
+                                <FiTrash2 
+                                    size={25}
+                                    color="#555555"
+                                    onClick={() => removeTalkingPoint(index)}
+                                />
                             </Container>
 
                             <Line
-                                color={theme.colors.lightGray2}
+                                borderColor={theme.colors.lightGray2}
                                 height="fit-content"
                                 width="100%"
+                                margin="0px"
                             />
                         </Container>
                     ))}

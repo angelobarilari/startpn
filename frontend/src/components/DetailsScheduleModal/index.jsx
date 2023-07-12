@@ -5,8 +5,10 @@ import Card from "../Card/Index";
 import Modal from "react-modal";
 import Line from "../Line";
 import Button from "../Button";
+import Input from "../Input";
 
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
+import { inputStyle } from "../../global/styles/input";
 import { theme } from "../../global/styles/theme";
 import { formatDateRange } from "../../utils";
 
@@ -15,6 +17,7 @@ import { MdOutlineArrowBackIosNew } from "react-icons/md"
 import { BiCircle } from "react-icons/bi";
 
 const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
+    const [annotation, setNewAnnotation] = useState([])
     const [checkedCards, setCheckedCards] = useState([]);
     const [checkedTalkingPoints, setCheckedTalkingPoints] = useState([]);
 
@@ -49,7 +52,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                 style={{
                     ...modalHeaderStyle,
                     height: "50px",
-                    justifyContent: "flex-start"
+                    justifyContent: "flex-start",
                 }}
             >
                 <MdOutlineArrowBackIosNew 
@@ -69,7 +72,6 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                 >
                     Detalhes da 1:1
                 </Span>
-
             </Container>
 
             <Line
@@ -273,7 +275,6 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                     borderRadius="10px"
                     background={theme.colors.white}
                     border={`1px solid ${theme.colors.lightGray}`}
-                    padding="10px 20px"
                 >
                     <Container
                         className="detailsTalkingPointsHeader"
@@ -281,6 +282,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                             ...modalHeaderStyle,
                             height: "50px",
                             justifyContent: "flex-start",
+                            paddingLeft: "20px"
                         }}
                     >
 
@@ -297,9 +299,10 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                     </Container>
                     
                     <Line
-                        color={theme.colors.lightGray2}
+                        borderColor={theme.colors.lightGray3}
                         height="fit-content"
                         width="100%"
+                        marginTop="0px"
                     />
 
                     {schedule.talkingPoints.map((talkingPoint, index) => (
@@ -312,6 +315,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                             justifyContent="space-between"
                             flexDirection="column"
                             key={index}
+                            paddingLeft="20px"
                         >
                              <Container
                                 minWidth="100%"
@@ -368,13 +372,125 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                         children="+ Adicionar novo ponto"
                         // onClick={addTalkingPoint}
                         type="button"
-                        padding="10px 0px"
+                        padding="10px 20px"
                     />
                 </Container>
                 
+
                 <Container
-                    
-                >
+                    className="annotationsHistoric"
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    height="fit-content"
+                    width="100%"
+                    backgroundColor="blue"
+                    borderRadius="10px"
+                    background={theme.colors.white}
+                    border={`1px solid ${theme.colors.lightGray}`}
+                > 
+                    <Container
+                            className="annotationsHistoricHeader"
+                            style={{
+                                ...modalHeaderStyle,
+                                height: "50px",
+                                justifyContent: "flex-start",
+                                paddingLeft: "20px"
+                            }}
+                        >
+                            <Span
+                                width="100%"
+                                fontSize="18px"
+                                fontStyle="normal"
+                                fontWeight="500"
+                                lineHeight="normal"
+                                color={theme.colors.black}
+                            >
+                                Histórico de anotações
+                            </Span>
+                    </Container>
+
+                    <Line
+                        borderColor={theme.colors.lightGray3}
+                        height="fit-content"
+                        width="100%"
+                        marginTop="0px"
+                    />
+
+                    <Container
+                        padding="16px 20px 28px 20px"
+                        width="100%"
+                    >
+                        <Input
+                            style={{
+                                ...inputStyle,
+                                background: theme.colors.lightGray4
+                            }}
+                            type="text"
+                            placeholder="Faça sua anotação"
+                            onChange={(event) =>
+                                setNewAnnotation(event.target.value)
+                            }
+                            value={annotation}
+                        />
+                    </Container>
+
+                    <Container
+                        display="flex"
+                        alignItems="flex-start"
+                        flexDirection="column"
+                        color="black"
+                        padding="0px 20px"
+                        width="100%"
+                        gap="20px"
+                    >
+                            <Span
+                                fontSize="14px"
+                                fontStyle="normal"
+                                fontWeight="500"
+                                lineHeight="normal"
+                            >
+                                <img
+                                    src="my img"
+                                    style={{
+                                        marginRight: "10px",
+                                    }}
+                                />
+                                {schedule.owner.name}
+                            </Span>
+                            
+                            <Span
+                                padding="5px 10px"
+                                borderRadius="60px"
+                                background={theme.colors.lightGray4}
+                                fontSize="12px"
+                                fontStyle="normal"
+                                fontWeight="500"
+                                lineHeight="normal"
+                                children={schedule.scheduleName}
+                            />
+
+                            <Span
+                                padding="5px 10px"
+                                borderRadius="60px"
+                                background={theme.colors.lightGray4}
+                                fontSize="12px"
+                                fontStyle="normal"
+                                fontWeight="500"
+                                lineHeight="normal"
+                                children={formatDateRange(schedule.startDate, schedule.endDate)}
+                            />
+
+                            texttext text text texttexttext
+                            text text text texttexttexttext 
+                            texttexttext texttext texttexttext 
+
+                            <Line
+                                borderColor={theme.colors.lightGray3}
+                                height="fit-content"
+                                width="100%"
+                            />
+                    </Container>
 
                 </Container>
             </Container>

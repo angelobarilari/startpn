@@ -22,6 +22,7 @@ import { RiSearch2Line } from "react-icons/ri";
 import { MdChecklist } from "react-icons/md";
 import { PiGearSix } from "react-icons/pi";
 import { BiUser } from "react-icons/bi";
+import { RxAvatar } from "react-icons/rx";
 
 import { SchedulesContext } from "../../context/schedules";
 
@@ -193,7 +194,11 @@ const Dashboard = () => {
                             className="logo"
                             alt="Company icon"
                         />
-                        PHOTO
+
+                        <RxAvatar 
+                            size={25}
+                            style={{marginRight: '10px'}}
+                        />
                     </Header>
 
                     <Container

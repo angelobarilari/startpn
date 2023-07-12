@@ -32,15 +32,12 @@ const CreateScheduleModal = ({ isOpen, onClose }) => {
     const handleCreateSchedule = (event) => {
         event.preventDefault();
 
-        const formatedDateandHour = convertToTimeStamp(
-            newScheduleDate,
-            newScheduleHour
-        );
+        const { startDate, endDate } = convertToTimeStamp(newDate, newHour);
 
         const data = {
             scheduleName: newScheduleName,
-            startDate: formatedDateandHour.startDate,
-            endDate: formatedDateandHour.endDate,
+            startDate,
+            endDate,
             guestEmail: newGuest,
             talkingPoints,
         };

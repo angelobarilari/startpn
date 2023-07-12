@@ -17,6 +17,7 @@ import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiCircle } from "react-icons/bi";
+import { RxAvatar } from "react-icons/rx"
 
 const Schedule = ({ schedule }) => {
     const [selectedCardId, setSelectedCardId] = useState(null);
@@ -177,11 +178,9 @@ const Schedule = ({ schedule }) => {
                             lineHeight="normal"
                             color={theme.colors.black}
                         >
-                            <img
-                                src="my img"
-                                style={{
-                                    marginRight: "10px",
-                                }}
+                            <RxAvatar 
+                                size={20}
+                                style={{marginRight: '10px'}}
                             />
                             {schedule.owner.name}
                         </Span>
@@ -207,11 +206,9 @@ const Schedule = ({ schedule }) => {
                             color={theme.colors.black}
                             lineHeight="normal"
                         >
-                            <img
-                                src="my img"
-                                style={{
-                                    marginRight: "10px",
-                                }}
+                            <RxAvatar 
+                                size={20}
+                                style={{marginRight: '10px'}}
                             />
                             {schedule.guest.name}
                         </Span>

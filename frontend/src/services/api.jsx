@@ -44,6 +44,7 @@ export const createSchedule = async (data) => {
 };
 
 export const updateSchedule = async (data, scheduleId) => {
+    console.log(data)
     api.patch(`schedules/${scheduleId}`, data)
         .then((res) => window.location.reload())
         .catch((err) => console.log(err.response.data));
