@@ -39,7 +39,7 @@ export const getSchedules = async () => {
 
 export const createSchedule = async (data) => {
     api.post("/schedules", data)
-        .then((res) => console.log(res.data) /* window.location.reload() */)
+        .then((res) => console.log(res.data))
         .catch((err) => console.log(err.response.data));
 };
 
@@ -52,7 +52,6 @@ export const updateSchedule = async (data, scheduleId) => {
 };
 
 export const deleteSchedule = async (scheduleId) => {
-    console.log(scheduleId);
     api.delete(`schedules/${scheduleId}`)
         .then((res) => window.location.reload())
         .catch((err) => console.log(err.response.data));

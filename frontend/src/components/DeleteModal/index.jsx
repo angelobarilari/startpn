@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Modal from "react-modal";
 import Container from "../Container";
 import Button from "../Button";
@@ -8,16 +8,15 @@ import Form from "../Form";
 
 import { theme } from "../../global/styles/theme";
 import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
-import { UsersContext } from "../../context/users";
+
+import { deleteSchedule } from "../../services/api";
 
 import { AiOutlineClose } from "react-icons/ai";
 
 const DeleteModal = ({ isOpen, onClose, schedule }) => {
-    // const handleDelete
-
     return (
         <Modal style={modalStyle} isOpen={isOpen} onRequestClose={onClose}>
-            <Form>
+            <Form onSubmit={() => deleteSchedule(schedule.id)}>
                 <Container
                     className="deleteModalHeader"
                     style={modalHeaderStyle}

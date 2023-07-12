@@ -39,11 +39,11 @@ const Schedule = ({ cleanCache, schedule }) => {
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
 
     const updateTalkingPoint = (index, value) => {
-      const updatedTalkingPoints = [...talkingPoints];
+        const updatedTalkingPoints = [...talkingPoints];
 
-      updatedTalkingPoints[index] = { description: value };
+        updatedTalkingPoints[index] = { description: value };
 
-      setTalkingPoints(updatedTalkingPoints);
+        setTalkingPoints(updatedTalkingPoints);
     };
 
     const addTalkingPoint = () => {
@@ -224,34 +224,34 @@ const Schedule = ({ cleanCache, schedule }) => {
                 </Container>
 
                 <Container
-                                            className="guestContainer"
-                                            width="100%"
-                                            display="flex"
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            fontSize="14px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="19px"
-                                            color={theme.colors.darkGray}
-                                        >
-                                            Convidado
-                                            <Span
-                                                width="50%"
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="flex-end"
-                                                color={theme.colors.black}
-                                                lineHeight="normal"
-                                            >
-                                                <img
-                                                    src="my img"
-                                                    style={{
-                                                        marginRight: "10px",
-                                                    }}
-                                                />
-                                                {schedule.guest.name}
-                                            </Span>
+                    className="guestContainer"
+                    width="100%"
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    fontSize="14px"
+                    fontStyle="normal"
+                    fontWeight="500"
+                    lineHeight="19px"
+                    color={theme.colors.darkGray}
+                >
+                    Convidado
+                    <Span
+                        width="50%"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="flex-end"
+                        color={theme.colors.black}
+                        lineHeight="normal"
+                    >
+                        <img
+                            src="my img"
+                            style={{
+                                marginRight: "10px",
+                            }}
+                        />
+                        {schedule.guest.name}
+                    </Span>
                 </Container>
             </Container>
 

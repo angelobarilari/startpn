@@ -180,9 +180,10 @@ const EditModal = ({
                         onChange={(event) => setNewGuest(event.target.value)}
                         value={schedule.guest}
                     >
-                        <option 
+                        <option
                             key={schedule.guest.email}
-                            value={schedule.guest.email}>
+                            value={schedule.guest.email}
+                        >
                             {schedule.guest.name}
                         </option>
                         {users
