@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "react-modal";
 import Container from "../Container";
 import Button from "../Button";
@@ -15,27 +15,56 @@ import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
 import { UsersContext } from "../../context/users";
 
+import { updateSchedule } from "../../services/api";
+
 import { AiOutlineClose } from "react-icons/ai";
 
 const EditModal = ({
     isOpen,
     onClose,
     schedule,
-    handleEditModal,
-    handleEditSchedule,
-    newScheduleName,
-    setNewScheduleName,
-    newScheduleDate,
-    setNewScheduleDate,
-    newScheduleHour,
-    setNewScheduleHour,
-    newGuest,
-    setNewGuest,
-    talkingPoints,
-    updateTalkingPoint,
-    addTalkingPoint,
 }) => {
     const { users } = useContext(UsersContext);
+
+    const [newScheduleName, setNewScheduleName] = useState(undefined);
+    const [newScheduleDate, setNewScheduleDate] = useState(undefined);
+    const [newScheduleHour, setNewScheduleHour] = useState(undefined);
+    const [newGuest, setNewGuest] = useState(undefined);
+
+    const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
+
+    const updateTalkingPoint = (index, value) => {
+        const updatedTalkingPoints = [...talkingPoints];
+
+        updatedTalkingPoints[index] = { description: value };
+
+        setTalkingPoints(updatedTalkingPoints);
+    };
+
+    const addTalkingPoint = () => {
+        const updatedTalkingPoints = [...talkingPoints, ""];
+        setTalkingPoints(updatedTalkingPoints);
+    };
+
+    const handleEditSchedule = (event) => {
+        // console.log(newScheduleDate)
+        // console.log(newScheduleHour)
+
+        const data = {
+            scheduleName: newScheduleName,
+            // startDate: 1688774788149,
+            // endDate: 1688774688149,
+            guestEmail: newGuest,
+            talkingPoints,
+        };
+
+        event.preventDefault();
+
+        updateSchedule(data, schedule.id);
+    };
+
+
+
     return (
         <Modal
             style={{
@@ -48,7 +77,7 @@ const EditModal = ({
             isOpen={isOpen}
             onRequestClose={onClose}
         >
-            <Form onSubmit={(event) => handleEditSchedule(event, schedule.id)}>
+            <Form onSubmit={(event) => handleEditSchedule(event)}>
                 <Container
                     className="editModalHeader"
                     style={{

@@ -14,9 +14,13 @@ import { deleteSchedule } from "../../services/api";
 import { AiOutlineClose } from "react-icons/ai";
 
 const DeleteModal = ({ isOpen, onClose, schedule }) => {
+    const handleDeleteSchedule = () => {
+        deleteSchedule(schedule.id)
+    }
+
     return (
         <Modal style={modalStyle} isOpen={isOpen} onRequestClose={onClose}>
-            <Form onSubmit={() => deleteSchedule(schedule.id)}>
+            <Form onSubmit={handleDeleteSchedule}>
                 <Container
                     className="deleteModalHeader"
                     style={modalHeaderStyle}
