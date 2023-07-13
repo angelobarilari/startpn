@@ -13,26 +13,27 @@ import { theme } from "../../global/styles/theme";
 import { formatDateRange } from "../../utils";
 
 import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
-import { MdOutlineArrowBackIosNew } from "react-icons/md"
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { BiCircle } from "react-icons/bi";
+import { RxAvatar } from "react-icons/rx";
 
 const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
-    const [annotation, setNewAnnotation] = useState([])
+    const [annotation, setNewAnnotation] = useState([]);
     const [checkedCards, setCheckedCards] = useState([]);
     const [checkedTalkingPoints, setCheckedTalkingPoints] = useState([]);
 
     const handleCheckClick = (id) => {
         if (checkedCards.includes(id))
             setCheckedCards(checkedCards.filter((cardId) => cardId !== id));
-        else 
-            setCheckedCards([...checkedCards, id]);
+        else setCheckedCards([...checkedCards, id]);
     };
 
     const handleTalkingPointCheckClick = (talkingPoint) => {
-        if (checkedTalkingPoints.includes(talkingPoint)) 
-            setCheckedTalkingPoints(checkedTalkingPoints.filter((tp) => tp !== talkingPoint));
-        else
-            setCheckedTalkingPoints([...checkedTalkingPoints, talkingPoint]);
+        if (checkedTalkingPoints.includes(talkingPoint))
+            setCheckedTalkingPoints(
+                checkedTalkingPoints.filter((tp) => tp !== talkingPoint)
+            );
+        else setCheckedTalkingPoints([...checkedTalkingPoints, talkingPoint]);
     };
 
     return (
@@ -55,10 +56,10 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                     justifyContent: "flex-start",
                 }}
             >
-                <MdOutlineArrowBackIosNew 
+                <MdOutlineArrowBackIosNew
                     color={theme.colors.babyBlue}
-                    size={25} 
-                    onClick={onClose} 
+                    size={25}
+                    onClick={onClose}
                 />
                 <Span
                     width="100%"
@@ -101,7 +102,6 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                     color="black"
                     border={`1px solid ${theme.colors.lightGray}`}
                 >
-
                     <Container
                         className="cardHeader"
                         width="100%"
@@ -219,11 +219,9 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                 lineHeight="normal"
                                 color={theme.colors.black}
                             >
-                                <img
-                                    src="my img"
-                                    style={{
-                                        marginRight: "10px",
-                                    }}
+                                <RxAvatar
+                                    size={20}
+                                    style={{ marginRight: "10px" }}
                                 />
                                 {schedule.owner.name}
                             </Span>
@@ -249,21 +247,16 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                 color={theme.colors.black}
                                 lineHeight="normal"
                             >
-                                <img
-                                    src="my img"
-                                    style={{
-                                        marginRight: "10px",
-                                    }}
+                                <RxAvatar
+                                    size={20}
+                                    style={{ marginRight: "10px" }}
                                 />
                                 {schedule.guest.name}
                             </Span>
                         </Container>
                     </Container>
-
-                    
-
                 </Card>
-                
+
                 <Container
                     className="detailsTalkingPoints"
                     display="flex"
@@ -282,10 +275,9 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                             ...modalHeaderStyle,
                             height: "50px",
                             justifyContent: "flex-start",
-                            paddingLeft: "20px"
+                            paddingLeft: "20px",
                         }}
                     >
-
                         <Span
                             width="100%"
                             fontSize="18px"
@@ -297,7 +289,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                             Talking Points da 1:1
                         </Span>
                     </Container>
-                    
+
                     <Line
                         borderColor={theme.colors.lightGray3}
                         height="fit-content"
@@ -317,7 +309,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                             key={index}
                             paddingLeft="20px"
                         >
-                             <Container
+                            <Container
                                 minWidth="100%"
                                 paddingBottom="20px"
                                 display="flex"
@@ -325,7 +317,7 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                 justifyContent="space-between"
                                 color="black"
                                 gap="20px"
-                            >   
+                            >
                                 {checkedTalkingPoints.includes(talkingPoint) ? (
                                     <BsCheckCircleFill
                                         size={25}
@@ -334,7 +326,11 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                             backgroundColor: theme.colors.white,
                                             borderRadius: "100%",
                                         }}
-                                        onClick={() => handleTalkingPointCheckClick(talkingPoint)}
+                                        onClick={() =>
+                                            handleTalkingPointCheckClick(
+                                                talkingPoint
+                                            )
+                                        }
                                     />
                                 ) : (
                                     <BiCircle
@@ -343,7 +339,11 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                             color: theme.colors.babyBlue,
                                             borderRadius: "100%",
                                         }}
-                                        onClick={() => handleTalkingPointCheckClick(talkingPoint)}
+                                        onClick={() =>
+                                            handleTalkingPointCheckClick(
+                                                talkingPoint
+                                            )
+                                        }
                                     />
                                 )}
 
@@ -356,7 +356,6 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                                 >
                                     {talkingPoint.description}
                                 </Span>
-
                             </Container>
                         </Container>
                     ))}
@@ -375,7 +374,6 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                         padding="10px 20px"
                     />
                 </Container>
-                
 
                 <Container
                     className="annotationsHistoric"
@@ -388,26 +386,26 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                     borderRadius="10px"
                     background={theme.colors.white}
                     border={`1px solid ${theme.colors.lightGray}`}
-                > 
+                >
                     <Container
-                            className="annotationsHistoricHeader"
-                            style={{
-                                ...modalHeaderStyle,
-                                height: "50px",
-                                justifyContent: "flex-start",
-                                paddingLeft: "20px"
-                            }}
+                        className="annotationsHistoricHeader"
+                        style={{
+                            ...modalHeaderStyle,
+                            height: "50px",
+                            justifyContent: "flex-start",
+                            paddingLeft: "20px",
+                        }}
+                    >
+                        <Span
+                            width="100%"
+                            fontSize="18px"
+                            fontStyle="normal"
+                            fontWeight="500"
+                            lineHeight="normal"
+                            color={theme.colors.black}
                         >
-                            <Span
-                                width="100%"
-                                fontSize="18px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                                color={theme.colors.black}
-                            >
-                                Histórico de anotações
-                            </Span>
+                            Histórico de anotações
+                        </Span>
                     </Container>
 
                     <Line
@@ -417,14 +415,11 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                         marginTop="0px"
                     />
 
-                    <Container
-                        padding="16px 20px 28px 20px"
-                        width="100%"
-                    >
+                    <Container padding="16px 20px 28px 20px" width="100%">
                         <Input
                             style={{
                                 ...inputStyle,
-                                background: theme.colors.lightGray4
+                                background: theme.colors.lightGray4,
                             }}
                             type="text"
                             placeholder="Faça sua anotação"
@@ -444,54 +439,52 @@ const DetailsScheduleModal = ({ isOpen, onClose, schedule }) => {
                         width="100%"
                         gap="20px"
                     >
-                            <Span
-                                fontSize="14px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                            >
-                                <img
-                                    src="my img"
-                                    style={{
-                                        marginRight: "10px",
-                                    }}
-                                />
-                                {schedule.owner.name}
-                            </Span>
-                            
-                            <Span
-                                padding="5px 10px"
-                                borderRadius="60px"
-                                background={theme.colors.lightGray4}
-                                fontSize="12px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                                children={schedule.scheduleName}
+                        <Span
+                            fontSize="14px"
+                            fontStyle="normal"
+                            fontWeight="500"
+                            lineHeight="normal"
+                            display="flex"
+                            alignItems="center"
+                        >
+                            <RxAvatar
+                                size={20}
+                                style={{ marginRight: "10px" }}
                             />
-
-                            <Span
-                                padding="5px 10px"
-                                borderRadius="60px"
-                                background={theme.colors.lightGray4}
-                                fontSize="12px"
-                                fontStyle="normal"
-                                fontWeight="500"
-                                lineHeight="normal"
-                                children={formatDateRange(schedule.startDate, schedule.endDate)}
-                            />
-
-                            texttext text text texttexttext
-                            text text text texttexttexttext 
-                            texttexttext texttext texttexttext 
-
-                            <Line
-                                borderColor={theme.colors.lightGray3}
-                                height="fit-content"
-                                width="100%"
-                            />
+                            {schedule.owner.name}
+                        </Span>
+                        <Span
+                            padding="5px 10px"
+                            borderRadius="60px"
+                            background={theme.colors.lightGray4}
+                            fontSize="12px"
+                            fontStyle="normal"
+                            fontWeight="500"
+                            lineHeight="normal"
+                            children={schedule.scheduleName}
+                        />
+                        <Span
+                            padding="5px 10px"
+                            borderRadius="60px"
+                            background={theme.colors.lightGray4}
+                            fontSize="12px"
+                            fontStyle="normal"
+                            fontWeight="500"
+                            lineHeight="normal"
+                            children={formatDateRange(
+                                schedule.startDate,
+                                schedule.endDate
+                            )}
+                        />
+                        text text text text text text text text text text text
+                        text text text text text text text text text text text
+                        text text text
+                        <Line
+                            borderColor={theme.colors.lightGray3}
+                            height="fit-content"
+                            width="100%"
+                        />
                     </Container>
-
                 </Container>
             </Container>
         </Modal>

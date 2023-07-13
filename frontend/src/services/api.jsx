@@ -32,6 +32,10 @@ export const getUsers = async () => {
     return api.get("/users");
 };
 
+export const getProfile = async () => {
+    return api.get("/users/profile");
+};
+
 /* ----- SCHEDULES REQS ----- */
 export const getSchedules = async () => {
     return api.get("/schedules");
@@ -44,7 +48,7 @@ export const createSchedule = async (data) => {
 };
 
 export const updateSchedule = async (data, scheduleId) => {
-    console.log(data)
+    console.log(data);
     api.patch(`schedules/${scheduleId}`, data)
         .then((res) => window.location.reload())
         .catch((err) => console.log(err.response.data));

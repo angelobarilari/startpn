@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Container from "../../components/Container";
 import Card from "../../components/Card/Index";
 import Button from "../../components/Button";
@@ -17,22 +17,38 @@ import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
 import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiCircle } from "react-icons/bi";
-import { RxAvatar } from "react-icons/rx"
+import { RxAvatar } from "react-icons/rx";
+
+import { SchedulesContext } from "../../context/schedules";
 
 const Schedule = ({ schedule }) => {
-    const [selectedCardId, setSelectedCardId] = useState(null);
-    const [checkedCards, setCheckedCards] = useState([]);
+    const { pastSchedules, setPastSchedules, setUpcomingSchedules } =
+        useContext(SchedulesContext);
 
+    const [selectedCardId, setSelectedCardId] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [detailsScheduleModal, setDetailsScheduleModal] = useState(false);
     const [editScheduleModal, setEditScheduleModal] = useState(false);
     const [deleteScheduleModalIsOpen, setScheduleDeleteModalIsOpen] =
         useState(false);
 
-    const handleCheckClick = (id) => {
-        if (checkedCards.includes(id))
-            setCheckedCards(checkedCards.filter((cardId) => cardId !== id));
-        else setCheckedCards([...checkedCards, id]);
+    const handleCheckClick = () => {
+        const isPastSchedule = pastSchedules.find((s) => s.id === schedule.id);
+
+        if (isPastSchedule) {
+            setPastSchedules((prevSchedules) =>
+                prevSchedules.filter((s) => s.id !== schedule.id)
+            );
+            setUpcomingSchedules((prevSchedules) => [
+                ...prevSchedules,
+                schedule,
+            ]);
+        } else {
+            setUpcomingSchedules((prevSchedules) =>
+                prevSchedules.filter((s) => s.id !== schedule.id)
+            );
+            setPastSchedules((prevSchedules) => [...prevSchedules, schedule]);
+        }
     };
 
     const handleDeleteModal = () => {
@@ -59,6 +75,7 @@ const Schedule = ({ schedule }) => {
                 margin="7.5px"
                 borderRadius="10px"
                 color="black"
+                backgroundColor="white"
                 border={`1px solid ${theme.colors.lightGray}`}
             >
                 <Container
@@ -69,7 +86,7 @@ const Schedule = ({ schedule }) => {
                     alignItems="center"
                     justifyContent="space-between"
                 >
-                    {checkedCards.includes(schedule.id) ? (
+                    {pastSchedules.find((s) => s.id === schedule.id) ? (
                         <BsCheckCircleFill
                             size={25}
                             style={{
@@ -77,7 +94,7 @@ const Schedule = ({ schedule }) => {
                                 backgroundColor: theme.colors.white,
                                 borderRadius: "100%",
                             }}
-                            onClick={() => handleCheckClick(schedule.id)}
+                            onClick={handleCheckClick}
                         />
                     ) : (
                         <BiCircle
@@ -86,7 +103,7 @@ const Schedule = ({ schedule }) => {
                                 color: theme.colors.babyBlue,
                                 borderRadius: "100%",
                             }}
-                            onClick={() => handleCheckClick(schedule.id)}
+                            onClick={handleCheckClick}
                         />
                     )}
 
@@ -178,9 +195,9 @@ const Schedule = ({ schedule }) => {
                             lineHeight="normal"
                             color={theme.colors.black}
                         >
-                            <RxAvatar 
+                            <RxAvatar
                                 size={20}
-                                style={{marginRight: '10px'}}
+                                style={{ marginRight: "10px" }}
                             />
                             {schedule.owner.name}
                         </Span>
@@ -206,9 +223,9 @@ const Schedule = ({ schedule }) => {
                             color={theme.colors.black}
                             lineHeight="normal"
                         >
-                            <RxAvatar 
+                            <RxAvatar
                                 size={20}
-                                style={{marginRight: '10px'}}
+                                style={{ marginRight: "10px" }}
                             />
                             {schedule.guest.name}
                         </Span>
@@ -296,7 +313,6 @@ const Schedule = ({ schedule }) => {
                 </>
             )}
         </>
-                
     );
 };
 

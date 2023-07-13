@@ -20,7 +20,7 @@ import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
 
 import { AiOutlineClose } from "react-icons/ai";
-import { FiTrash2 } from "react-icons/fi"
+import { FiTrash2 } from "react-icons/fi";
 
 const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const { users } = useContext(UsersContext);
@@ -33,11 +33,11 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
 
     const handleEditSchedule = (event) => {
-        event.preventDefault()
+        event.preventDefault();
 
         const newDate = newScheduleDate || formatDate(schedule.startDate);
         const newHour = newScheduleHour || formatTime(schedule.startDate);
-      
+
         const { startDate, endDate } = convertToTimeStamp(newDate, newHour);
 
         const updatedSchedule = {
@@ -47,7 +47,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
             guestEmail: newGuest,
             talkingPoints,
         };
-      
+
         updateSchedule(updatedSchedule, schedule.id);
     };
 
@@ -65,10 +65,12 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     };
 
     const removeTalkingPoint = (index) => {
-        const updatedTalkingPoints = talkingPoints.filter((_, i) => i !== index);
+        const updatedTalkingPoints = talkingPoints.filter(
+            (_, i) => i !== index
+        );
         setTalkingPoints(updatedTalkingPoints);
-      };
-      
+    };
+
     return (
         <Modal
             style={{
@@ -270,9 +272,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                     ICON
                                 </div>
 
-                                <Container 
-                                paddingBottom="20px"
-                                width="80%">
+                                <Container paddingBottom="20px" width="80%">
                                     <Label
                                         style={labelStyle}
                                         htmlFor={`scheduleTopic_${index}`}
@@ -292,7 +292,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                                     />
                                 </Container>
 
-                                <FiTrash2 
+                                <FiTrash2
                                     size={25}
                                     color="#555555"
                                     onClick={() => removeTalkingPoint(index)}

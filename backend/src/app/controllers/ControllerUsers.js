@@ -76,16 +76,8 @@ class ControllerUsers {
     }
 
     async getUserById(req, res) {
-        const { id } = req.params
-        const decodedId = req.decodedId
-
-        if (id != decodedId)
-            return res.status(403).json({
-                message:"No permissions to perform this action"
-            })
-
         try {
-            const user = await Users.findByPk(id, {
+            const user = await Users.findByPk(req.decodedId, {
                 attributes: { exclude: ['password'] }
             })
         
