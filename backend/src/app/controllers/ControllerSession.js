@@ -5,6 +5,7 @@ const Users = require("../models/Users")
 class ControllerSession {
     async login(req, res) {
         const { email, password } = req.body
+        
         if (!email || !password)
             return res.status(401).json({
                 message: "No credentials provided"

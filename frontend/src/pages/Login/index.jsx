@@ -111,6 +111,7 @@ const Login = () => {
                                         setEmail(event.target.value)
                                     }
                                     value={email}
+                                    required
                                 />
 
                                 <Label
@@ -126,6 +127,7 @@ const Login = () => {
                                         setPassword(event.target.value)
                                     }
                                     value={password}
+                                    required
                                 />
                             </Container>
 

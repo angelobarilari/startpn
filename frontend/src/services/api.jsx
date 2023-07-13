@@ -10,12 +10,6 @@ api.addAsyncRequestTransform((response) => async () => {
     if (token) response.headers["authorization"] = `Bearer ${token}`;
 });
 
-export const createUser = async (data) => {
-    api.post("/users", data)
-        .then((res) => (window.location.href = "/login"))
-        .catch((err) => console.log(err.response.data));
-};
-
 export const login = async (data) => {
     api.post("/sessions", data)
         .then((res) => {
@@ -27,10 +21,41 @@ export const login = async (data) => {
         .catch((err) => console.log(err.response.data));
 };
 
-export const getSchedules = async () => {
-    return api.get("/schedules");
+/* ----- USERS REQS ----- */
+export const createUser = async (data) => {
+    api.post("/users", data)
+        .then((res) => (window.location.href = "/login"))
+        .catch((err) => console.log(err.response.data));
 };
 
 export const getUsers = async () => {
     return api.get("/users");
+};
+
+export const getProfile = async () => {
+    return api.get("/users/profile");
+};
+
+/* ----- SCHEDULES REQS ----- */
+export const getSchedules = async () => {
+    return api.get("/schedules");
+};
+
+export const createSchedule = async (data) => {
+    api.post("/schedules", data)
+        .then((res) => window.location.reload())
+        .catch((err) => console.log(err.response.data));
+};
+
+export const updateSchedule = async (data, scheduleId) => {
+    console.log(data);
+    api.patch(`schedules/${scheduleId}`, data)
+        .then((res) => window.location.reload())
+        .catch((err) => console.log(err.response.data));
+};
+
+export const deleteSchedule = async (scheduleId) => {
+    api.delete(`schedules/${scheduleId}`)
+        .then((res) => window.location.reload())
+        .catch((err) => console.log(err.response.data));
 };

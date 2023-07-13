@@ -4,7 +4,15 @@ const Users = require('../models/Users')
 class ControllerSchedules {
     async createSchedule(req, res) {
         const { scheduleName, startDate, endDate, guestEmail, talkingPoints } = req.body
-        const ownerId = req.decodedId
+        
+        if (!scheduleName || 
+            !startDate || 
+            !endDate || 
+            !guestEmail || 
+            !talkingPoints)
+            return res.status(400).json({
+                message: "Missing data "
+            })
 
         const guest = await Users.findOne({ where: { email: guestEmail } })
         
@@ -15,7 +23,7 @@ class ControllerSchedules {
 
         try {
             const schedule = await Schedules.create({
-                ownerId,
+                ownerId: req.decodedId,
                 guestId: guest.id,
                 scheduleName,
                 startDate,
@@ -28,7 +36,6 @@ class ControllerSchedules {
                 schedule
             })
         } catch (error) {
-            console.log(error.message)
             return res.status(500).json({
                 error: error.message
             })
@@ -36,12 +43,10 @@ class ControllerSchedules {
     }
 
     async getSchedulesByUserId(req, res) {
-        const decodedId = req.decodedId
-
         try {
             const schedules = await Schedules.findAll({
                 where: {
-                  ownerId: decodedId
+                  ownerId: req.decodedId
                 },
                 include: [
                     {   model: Users, as: 'owner', 
@@ -62,26 +67,24 @@ class ControllerSchedules {
     }
 
     async updateSchedule(req, res) {
-        const { id } = req.params
-        const decodedId = req.decodedId
-        
-        const schedule = await Schedules.findByPk(id)
-        
-        if (!schedule) 
-            return res.status(404).json({ 
-                message: 'Schedule not found' 
-            })
-
-        if (schedule.ownerId != decodedId)
-            return res.status(403).json({
-                message:"No permissions to perform this action"
-            })
-
         try {
-            const { scheduleName, scheduleDate, guestEmail, talkingPoints } = req.body
+            const { id } = req.params
+            const schedule = await Schedules.findByPk(id)
+            
+            if (!schedule) 
+                return res.status(404).json({ 
+                    message: 'Schedule not found' 
+                })
+    
+            if (schedule.ownerId != req.decodedId)
+                return res.status(403).json({
+                    message:"No permissions to perform this action"
+                })
+
+            const { scheduleName, startDate, endDate, guestEmail, talkingPoints } = req.body
 
             const updatedSchedule = await schedule.update(
-                { scheduleName, scheduleDate, guestEmail, talkingPoints }, 
+                { scheduleName, startDate, endDate, guestEmail, talkingPoints }, 
                 { returning: true }
             )
 
@@ -95,23 +98,21 @@ class ControllerSchedules {
         }
     }
 
-    async deleteSchedule(req, res) {
-        const { id } = req.params
-        const decodedId = req.decodedId
-
-        if (id != decodedId)
-            return res.status(403).json({
-                message:"No permissions to perform this action"
-            })
-        
-        const schedule = await Schedules.findByPk(id)
-
-        if (!schedule) 
-            return res.status(404).json({ 
-                message: 'Schedule not found' 
-            })
-
+    async deleteSchedule(req, res) {   
         try {
+            const { id } = req.params
+            const schedule = await Schedules.findByPk(id)
+    
+            if (!schedule) 
+                return res.status(404).json({ 
+                    message: 'Schedule not found' 
+                })
+    
+            if (schedule.ownerId != req.decodedId)
+                return res.status(403).json({
+                    message:"No permissions to perform this action"
+                })
+
             await schedule.destroy()
     
             return res.status(204).json({})
