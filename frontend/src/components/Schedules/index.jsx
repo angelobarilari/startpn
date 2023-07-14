@@ -125,13 +125,13 @@ const Schedule = ({ onClick, schedule }) => {
                         flexShrink="0"
                         gap="10px"
                         {...(isDesktop
-                            ?   {}
-                            :   {
-                                    onClick: () => {
-                                        setSelectedCardId(schedule.id);
-                                        setDetailsScheduleModal(true);
-                                    },
-                                })}
+                            ? {}
+                            : {
+                                  onClick: () => {
+                                      setSelectedCardId(schedule.id);
+                                      setDetailsScheduleModal(true);
+                                  },
+                              })}
                     >
                         <Span
                             textAlign="left"
