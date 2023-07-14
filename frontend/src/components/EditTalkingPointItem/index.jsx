@@ -9,7 +9,7 @@ import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
 
 import { FiTrash2 } from "react-icons/fi";
-import { useMediaQuery } from "react-responsive";
+import { BsCircleFill } from "react-icons/bs";
 
 const EditTalkingPointItem = ({
     talkingPoint,
@@ -18,7 +18,6 @@ const EditTalkingPointItem = ({
     setTalkingPoints,
 }) => {
     const [description, setDescription] = useState(talkingPoint.description);
-    const isDesktop = useMediaQuery({ minWidth: 768 });
 
     const updateTalkingPoint = (index, value) => {
         const updatedTalkingPoints = [...talkingPoints];
@@ -50,13 +49,7 @@ const EditTalkingPointItem = ({
                 alignItems="center"
                 justifyContent="space-between"
             >
-                <div
-                    style={{
-                        color: "black",
-                    }}
-                >
-                    ICON
-                </div>
+                <BsCircleFill size={30} color={theme.colors.babyBlue} />
 
                 <Container paddingBottom="20px" width="80%">
                     <Label
