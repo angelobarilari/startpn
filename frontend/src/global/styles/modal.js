@@ -1,6 +1,6 @@
 import { theme } from "./theme";
 
-export const modalStyle = {
+export const modalMobileStyle = {
     content: {
         width: "100%",
         height: "40%",
@@ -16,6 +16,19 @@ export const modalStyle = {
     },
 };
 
+export const modalDesktopStyle = {
+    content: {
+        flexShrink: "0",
+        width: "375px",
+        height: "275px",
+        background: theme.colors.white,
+        borderRadius: "20px",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
+};
+
 export const modalHeaderStyle = {
     color: theme.colors.black,
     width: "100%",
@@ -27,4 +40,5 @@ export const modalHeaderStyle = {
     fontStyle: "normal",
     fontWeight: "500",
     lineHeight: "normal",
+    flexShrink: "0",
 };

@@ -8,6 +8,7 @@ import Label from "../Label";
 import Form from "../Form";
 import Input from "../Input";
 import Select from "../Select";
+import EditTalkingPointItem from "../EditTalkingPointItem";
 
 import { UsersContext } from "../../context/users";
 import { updateSchedule } from "../../services/api";
@@ -15,15 +16,22 @@ import { convertToTimeStamp, formatDate, formatTime } from "../../utils";
 
 import { theme } from "../../global/styles/theme";
 
-import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
+import {
+    modalMobileStyle,
+    modalDesktopStyle,
+    modalHeaderStyle,
+} from "../../global/styles/modal";
 import { labelStyle } from "../../global/styles/label";
 import { inputStyle } from "../../global/styles/input";
 
 import { AiOutlineClose } from "react-icons/ai";
-import { FiTrash2 } from "react-icons/fi";
+
+import { useMediaQuery } from "react-responsive";
 
 const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const { users } = useContext(UsersContext);
+
+    const isDesktop = useMediaQuery({ minWidth: 768 });
 
     const [newScheduleName, setNewScheduleName] = useState(undefined);
     const [newScheduleDate, setNewScheduleDate] = useState("");
@@ -51,34 +59,25 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
         updateSchedule(updatedSchedule, schedule.id);
     };
 
-    const updateTalkingPoint = (index, value) => {
-        const updatedTalkingPoints = [...talkingPoints];
-
-        updatedTalkingPoints[index] = { description: value };
-
-        setTalkingPoints(updatedTalkingPoints);
-    };
-
     const addTalkingPoint = () => {
         const updatedTalkingPoints = [...talkingPoints, ""];
-        setTalkingPoints(updatedTalkingPoints);
-    };
-
-    const removeTalkingPoint = (index) => {
-        const updatedTalkingPoints = talkingPoints.filter(
-            (_, i) => i !== index
-        );
         setTalkingPoints(updatedTalkingPoints);
     };
 
     return (
         <Modal
             style={{
-                content: {
-                    ...modalStyle.content,
-                    height: "100%",
-                    borderRadius: "none",
-                },
+                content: isDesktop
+                    ? {
+                          ...modalDesktopStyle.content,
+                          height: "90vh",
+                          width: "660px",
+                      }
+                    : {
+                          ...modalMobileStyle.content,
+                          height: "100%",
+                          borderRadius: "none",
+                      },
             }}
             isOpen={isOpen}
             onRequestClose={onClose}
@@ -248,64 +247,12 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                     </Span>
 
                     {talkingPoints.map((talkingPoint, index) => (
-                        <Container
-                            className="talkingPoint"
-                            width="100%"
-                            height="fit-content"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            flexDirection="column"
-                            key={index}
-                        >
-                            <Container
-                                minWidth="100%%"
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <div
-                                    style={{
-                                        color: "black",
-                                    }}
-                                >
-                                    ICON
-                                </div>
-
-                                <Container paddingBottom="20px" width="80%">
-                                    <Label
-                                        style={labelStyle}
-                                        htmlFor={`scheduleTopic_${index}`}
-                                        children={"Nome do talking point"}
-                                    />
-                                    <Input
-                                        style={inputStyle}
-                                        type="text"
-                                        name={`scheduleTopic_${index}`}
-                                        onChange={(event) =>
-                                            updateTalkingPoint(
-                                                index,
-                                                event.target.value
-                                            )
-                                        }
-                                        value={talkingPoint.description}
-                                    />
-                                </Container>
-
-                                <FiTrash2
-                                    size={25}
-                                    color="#555555"
-                                    onClick={() => removeTalkingPoint(index)}
-                                />
-                            </Container>
-
-                            <Line
-                                borderColor={theme.colors.lightGray2}
-                                height="fit-content"
-                                width="100%"
-                                margin="0px"
-                            />
-                        </Container>
+                        <EditTalkingPointItem
+                            talkingPoint={talkingPoint}
+                            talkingPoints={talkingPoints}
+                            setTalkingPoints={setTalkingPoints}
+                            index={index}
+                        />
                     ))}
 
                     <Button

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
+import PrivateRoute from "../pages/PrivateRoute";
 
 function AppStack() {
     return (
@@ -12,7 +13,10 @@ function AppStack() {
 
                 <Route path="/login" element={<Login />} />
 
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route
+                    path="/dashboard/*"
+                    element={<PrivateRoute element={<Dashboard />} />}
+                />
             </Routes>
         </Router>
     );

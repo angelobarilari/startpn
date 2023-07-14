@@ -16,6 +16,9 @@ import { createUser } from "../../services/api";
 import { inputStyle } from "../../global/styles/input";
 import { labelStyle } from "../../global/styles/label";
 
+import { BsCheckCircleFill } from "react-icons/bs";
+import { BiCircle } from "react-icons/bi";
+
 import steveJobs from "../../images/svg/steveJobs.svg";
 import companyIcon from "../../images/svg/companyIcon.svg";
 
@@ -202,7 +205,7 @@ const Register = () => {
                                 height="20%"
                                 marginTop="10px"
                             >
-                                <Input
+                                {/* <Input
                                     type="checkbox"
                                     width="20%"
                                     height="50%"
@@ -212,7 +215,28 @@ const Register = () => {
                                         setConfirmTerms(event.target.checked)
                                     }
                                     value={confirmTerms}
-                                />
+                                /> */}
+
+                                {confirmTerms ? (
+                                    <BsCheckCircleFill
+                                        size={50}
+                                        style={{
+                                            color: theme.colors.babyBlue,
+                                            backgroundColor: theme.colors.white,
+                                            borderRadius: "100%",
+                                        }}
+                                        onClick={() => setConfirmTerms(false)}
+                                    />
+                                ) : (
+                                    <BiCircle
+                                        size={50}
+                                        style={{
+                                            color: theme.colors.babyBlue,
+                                            borderRadius: "100%",
+                                        }}
+                                        onClick={() => setConfirmTerms(true)}
+                                    />
+                                )}
 
                                 <Span
                                     display="flex"
