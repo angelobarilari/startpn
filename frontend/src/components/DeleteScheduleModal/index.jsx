@@ -7,19 +7,31 @@ import Form from "../Form";
 import Modal from "react-modal";
 
 import { theme } from "../../global/styles/theme";
-import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
+import {
+    modalMobileStyle,
+    modalDesktopStyle,
+    modalHeaderStyle,
+} from "../../global/styles/modal";
 
 import { deleteSchedule } from "../../services/api";
 
 import { AiOutlineClose } from "react-icons/ai";
+
+import { useMediaQuery } from "react-responsive";
 
 const DeleteScheduleModal = ({ isOpen, onClose, schedule }) => {
     const handleDeleteSchedule = () => {
         deleteSchedule(schedule.id);
     };
 
+    const isDesktop = useMediaQuery({ minWidth: 768 });
+
     return (
-        <Modal style={modalStyle} isOpen={isOpen} onRequestClose={onClose}>
+        <Modal
+            style={isDesktop ? modalDesktopStyle : modalMobileStyle}
+            isOpen={isOpen}
+            onRequestClose={onClose}
+        >
             <Form onSubmit={handleDeleteSchedule}>
                 <Container
                     className="deleteModalHeader"

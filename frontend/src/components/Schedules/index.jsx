@@ -12,7 +12,11 @@ import Modal from "react-modal";
 import { theme } from "../../global/styles/theme";
 import { formatDateRange } from "../../utils";
 
-import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
+import {
+    modalMobileStyle,
+    modalDesktopStyle,
+    modalHeaderStyle,
+} from "../../global/styles/modal";
 
 import { BsThreeDotsVertical, BsCheckCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
@@ -20,10 +24,13 @@ import { BiCircle } from "react-icons/bi";
 import { RxAvatar } from "react-icons/rx";
 
 import { SchedulesContext } from "../../context/schedules";
+import { useMediaQuery } from "react-responsive";
 
-const Schedule = ({ schedule }) => {
+const Schedule = ({ onClick, schedule }) => {
     const { pastSchedules, setPastSchedules, setUpcomingSchedules } =
         useContext(SchedulesContext);
+
+    const isDesktop = useMediaQuery({ minWidth: 768 });
 
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -77,6 +84,7 @@ const Schedule = ({ schedule }) => {
                 color="black"
                 backgroundColor="white"
                 border={`1px solid ${theme.colors.lightGray}`}
+                onClick={onClick}
             >
                 <Container
                     className="cardHeader"
@@ -116,10 +124,14 @@ const Schedule = ({ schedule }) => {
                         justifyContent="center"
                         flexShrink="0"
                         gap="10px"
-                        onClick={() => {
-                            setSelectedCardId(schedule.id);
-                            setDetailsScheduleModal(true);
-                        }}
+                        {...(isDesktop
+                            ?   {}
+                            :   {
+                                    onClick: () => {
+                                        setSelectedCardId(schedule.id);
+                                        setDetailsScheduleModal(true);
+                                    },
+                                })}
                     >
                         <Span
                             textAlign="left"
@@ -238,7 +250,7 @@ const Schedule = ({ schedule }) => {
                     <Modal
                         isOpen={modalIsOpen}
                         onRequestClose={() => setModalIsOpen(false)}
-                        style={modalStyle}
+                        style={isDesktop ? modalDesktopStyle : modalMobileStyle}
                     >
                         <Container
                             className="modalHeader"

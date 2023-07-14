@@ -2,13 +2,16 @@ import React from "react";
 import UserProvider from "./user";
 import SchedulesProvider from "./schedules";
 import UsersProvider from "./users";
+import TalkingPointProvider from "./TalkingPoint";
 
 function Provider({ children }) {
     return (
         <SchedulesProvider>
-            <UsersProvider>
-                <UserProvider>{children}</UserProvider>
-            </UsersProvider>
+            <TalkingPointProvider>
+                <UsersProvider>
+                    <UserProvider>{children}</UserProvider>
+                </UsersProvider>
+            </TalkingPointProvider>
         </SchedulesProvider>
     );
 }

@@ -13,13 +13,19 @@ import { theme } from "../../global/styles/theme";
 import { convertToTimeStamp } from "../../utils";
 import { createSchedule } from "../../services/api";
 
-import { modalStyle, modalHeaderStyle } from "../../global/styles/modal";
+import {
+    modalMobileStyle,
+    modalDesktopStyle,
+    modalHeaderStyle,
+} from "../../global/styles/modal";
 import { inputStyle } from "../../global/styles/input";
 import { labelStyle } from "../../global/styles/label";
 
 import { AiOutlineClose } from "react-icons/ai";
 
 import { UsersContext } from "../../context/users";
+
+import { useMediaQuery } from "react-responsive";
 
 const CreateScheduleModal = ({ isOpen, onClose }) => {
     const { users } = useContext(UsersContext);
@@ -28,6 +34,8 @@ const CreateScheduleModal = ({ isOpen, onClose }) => {
     const [newScheduleHour, setNewScheduleHour] = useState("");
     const [newGuest, setNewGuest] = useState("");
     const [talkingPoints, setTalkingPoints] = useState([]);
+
+    const isDesktop = useMediaQuery({ minWidth: 768 });
 
     const handleCreateSchedule = (event) => {
         event.preventDefault();
@@ -62,11 +70,17 @@ const CreateScheduleModal = ({ isOpen, onClose }) => {
     return (
         <Modal
             style={{
-                content: {
-                    ...modalStyle.content,
-                    height: "100%",
-                    borderRadius: "none",
-                },
+                content: isDesktop
+                    ? {
+                          ...modalDesktopStyle.content,
+                          height: "90vh",
+                          width: "660px",
+                      }
+                    : {
+                          ...modalMobileStyle.content,
+                          height: "100%",
+                          borderRadius: "none",
+                      },
             }}
             isOpen={isOpen}
             onRequestClose={onClose}

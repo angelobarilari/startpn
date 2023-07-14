@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import CreateScheduleModal from "../../components/CreateScheduleModal";
+import Annotations from "../../components/Annotations";
+import TalkingPointItem from "../../components/TalkingPoint";
 import Schedules from "../../components/Schedules";
 import Container from "../../components/Container";
 import Paragraph from "../../components/Paragraph";
@@ -8,9 +10,11 @@ import Button from "../../components/Button";
 import Header from "../../components/Header";
 import Span from "../../components/Span";
 import Input from "../../components/Input";
+import Line from "../../components/Line";
 
 import { theme } from "../../global/styles/theme";
 import { inputStyle } from "../../global/styles/input";
+import { modalHeaderStyle } from "../../global/styles/modal";
 
 import addScheduleBtn from "../../images/svg/addScheduleBtn.svg";
 import companyIcon from "../../images/svg/companyIcon.svg";
@@ -34,14 +38,24 @@ const Dashboard = () => {
     const { pastSchedules, upcomingSchedules } = useContext(SchedulesContext);
     const { user } = useContext(UserContext);
 
+    const [selectedCard, setSelectedCard] = useState(null);
     const [activeScheduleList, setActiveScheduleList] = useState("upcoming");
     const [sidebarVisibility, setSidebarVisibility] = useState(false);
     const [selectedButton, setSelectedButton] = useState(0);
     const [createScheduleModalIsOpen, setCreateScheduleModalIsOpen] =
         useState(false);
 
+    const [talkingPoints, setTalkingPoints] = useState(null);
+
     const sidebarRef = useRef(null);
 
+    useEffect(() => {
+        setSelectedCard(upcomingSchedules[0]);
+    }, [upcomingSchedules]);
+
+    useEffect(() => {
+        setTimeout(() => setTalkingPoints(selectedCard.talkingPoints));
+    }, [selectedCard]);
     useEffect(() => {
         document.addEventListener("click", handleClickOutsideSidebar);
 
@@ -49,6 +63,10 @@ const Dashboard = () => {
             document.removeEventListener("click", handleClickOutsideSidebar);
         };
     }, []);
+
+    const handleCardClick = (card) => {
+        setSelectedCard(card);
+    };
 
     const handleClickOutsideSidebar = (event) => {
         const menuIcon = document.querySelector(".menuIcon");
@@ -163,15 +181,16 @@ const Dashboard = () => {
                                         style={
                                             activeScheduleList === "upcoming"
                                                 ? {
-                                                    color: theme.colors.white,
-                                                    backgroundColor:
-                                                        theme.colors.babyBlue,
-                                                }
+                                                      color: theme.colors.white,
+                                                      backgroundColor:
+                                                          theme.colors.babyBlue,
+                                                  }
                                                 : {
-                                                    color: theme.colors.babyBlue,
-                                                    backgroundColor:
-                                                        theme.colors.white,
-                                                }
+                                                      color: theme.colors
+                                                          .babyBlue,
+                                                      backgroundColor:
+                                                          theme.colors.white,
+                                                  }
                                         }
                                         onClick={() =>
                                             setActiveScheduleList("upcoming")
@@ -186,15 +205,16 @@ const Dashboard = () => {
                                         style={
                                             activeScheduleList === "past"
                                                 ? {
-                                                    color: theme.colors.white,
-                                                    backgroundColor:
-                                                        theme.colors.babyBlue,
-                                                }
+                                                      color: theme.colors.white,
+                                                      backgroundColor:
+                                                          theme.colors.babyBlue,
+                                                  }
                                                 : {
-                                                    color: theme.colors.babyBlue,
-                                                    backgroundColor:
-                                                        theme.colors.white,
-                                                }
+                                                      color: theme.colors
+                                                          .babyBlue,
+                                                      backgroundColor:
+                                                          theme.colors.white,
+                                                  }
                                         }
                                         onClick={() =>
                                             setActiveScheduleList("past")
@@ -217,10 +237,6 @@ const Dashboard = () => {
                                         type="text"
                                         name="scheduleName"
                                         placeholder="Pesquisar..."
-                                        // onChange={(event) =>
-                                        // setNewScheduleName(event.target.value)
-                                        // }
-                                        // value={newScheduleName}
                                     />
                                     <Button
                                         width="200px"
@@ -256,222 +272,183 @@ const Dashboard = () => {
                                 >
                                     {activeScheduleList === "upcoming"
                                         ? upcomingSchedules.map((schedule) => (
-                                            <Schedules schedule={schedule} />
-                                        ))
+                                              <Schedules
+                                                  schedule={schedule}
+                                                  onClick={() =>
+                                                      handleCardClick(schedule)
+                                                  }
+                                              />
+                                          ))
                                         : pastSchedules.map((schedule) => (
-                                            <Schedules schedule={schedule} />
-                                        ))}
+                                              <Schedules
+                                                  schedule={schedule}
+                                                  onClick={() =>
+                                                      handleCardClick(schedule)
+                                                  }
+                                              />
+                                          ))}
                                 </Container>
 
                                 <Container
-                                    width="100%"
-                                    margin="12.5px 0px 10px 15px"
-                                    background="pink"
-                                    padding="20px"
-                                    borderRadius="10px"
-                                    // border={`1px solid ${theme.colors.lightGray}`}
-                                ></Container>
+                                    display="flex"
+                                    flexDirection="column"
+                                    gap="10px"
+                                >
+                                    <Container
+                                        className="detailsTalkingPoints"
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        width="100%"
+                                        height="180px"
+                                        overflowY="auto"
+                                        // height="fit-content"
+                                        backgroundColor="white"
+                                        borderRadius="10px"
+                                        background={theme.colors.white}
+                                        border={`1px solid ${theme.colors.lightGray}`}
+                                    >
+                                        <Container
+                                            className="detailsTalkingPointsHeader"
+                                            style={{
+                                                ...modalHeaderStyle,
+                                                height: "50px",
+                                                justifyContent: "flex-start",
+                                                paddingLeft: "20px",
+                                            }}
+                                        >
+                                            <Span
+                                                width="100%"
+                                                fontSize="18px"
+                                                fontStyle="normal"
+                                                fontWeight="500"
+                                                lineHeight="normal"
+                                                color={theme.colors.black}
+                                                textAlign="left"
+                                            >
+                                                Talking Points da 1:1
+                                            </Span>
+                                        </Container>
+
+                                        <Line
+                                            borderColor={
+                                                theme.colors.lightGray3
+                                            }
+                                            height="fit-content"
+                                            width="100%"
+                                            marginTop="0px"
+                                        />
+
+                                        {talkingPoints && (
+                                            <>
+                                                {talkingPoints.map(
+                                                    (talkingPoint, index) => (
+                                                        <TalkingPointItem
+                                                            talkingPoint={
+                                                                talkingPoint
+                                                            }
+                                                            index={index}
+                                                        />
+                                                    )
+                                                )}
+                                            </>
+                                        )}
+                                    </Container>
+
+                                    {selectedCard && (
+                                        <>
+                                            <Annotations
+                                                schedule={selectedCard}
+                                            />
+                                        </>
+                                    )}
+                                </Container>
                             </Container>
                         </Container>
                     </Container>
-                
+
                     <Sidebar
-                            className="sidebar"
-                            height="100%"
-                            minWidth="15%"
-                            padding="16px"
-                            position="absolute"
-                            top="0px"
-                            left="0px"
-                            borderRadius=" 0px 17px 17px 0px"
-                            borderRight={`1px solid ${theme.colors.lightGray}`}
-                            boxShadow="24px 0px 200px 0px rgba(0, 0, 0, 0.40)"
-                            backgroundColor={theme.colors.white}
+                        className="sidebar"
+                        height="100%"
+                        minWidth="15%"
+                        padding="16px"
+                        position="absolute"
+                        top="0px"
+                        left="0px"
+                        borderRadius=" 0px 17px 17px 0px"
+                        borderRight={`1px solid ${theme.colors.lightGray}`}
+                        boxShadow="24px 0px 200px 0px rgba(0, 0, 0, 0.40)"
+                        backgroundColor={theme.colors.white}
+                    >
+                        <Header
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            height="10%"
+                            width="100%"
+                            color={theme.colors.babyBlue}
                         >
-                            <Header
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                height="10%"
-                                width="100%"
-                                color={theme.colors.babyBlue}
-                            >
-                                <img
-                                    src={companyIcon}
-                                    className="logo"
-                                    alt="Company icon"
-                                    width="50%"
-                                />
-                            </Header>
+                            <img
+                                src={companyIcon}
+                                className="logo"
+                                alt="Company icon"
+                                width="50%"
+                            />
+                        </Header>
 
+                        <Container
+                            height="70%"
+                            width="100%"
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
                             <Container
-                                height="70%"
                                 width="100%"
-                                display="flex"
+                                className="btnsContainer"
+                                display="inline-flex"
                                 flexDirection="column"
-                                alignItems="center"
-                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                gap="21px"
                             >
-                                <Container
+                                <Button
                                     width="100%"
-                                    className="btnsContainer"
-                                    display="inline-flex"
-                                    flexDirection="column"
-                                    alignItems="flex-start"
-                                    gap="21px"
+                                    display="flex"
+                                    alignItems="center"
+                                    paddingLeft="11px"
+                                    flexShrink="0"
+                                    fontSize="15px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    backgroundColor={
+                                        selectedButton === 0
+                                            ? theme.colors.lightGray3
+                                            : theme.colors.white
+                                    }
+                                    color={
+                                        selectedButton === 0
+                                            ? theme.colors.babyBlue
+                                            : theme.colors.darkGray2
+                                    }
+                                    onClick={() => setSelectedButton(0)}
+                                    className={
+                                        selectedButton === 0 ? "selected" : ""
+                                    }
                                 >
-                                    <Button
-                                        width="100%"
-                                        display="flex"
-                                        alignItems="center"
-                                        paddingLeft="11px"
-                                        flexShrink="0"
-                                        fontSize="15px"
-                                        fontStyle="normal"
-                                        fontWeight="500"
-                                        lineHeight="normal"
-                                        backgroundColor={
-                                            selectedButton === 0
-                                                ? theme.colors.lightGray3
-                                                : theme.colors.white
-                                        }
-                                        color={
-                                            selectedButton === 0
-                                                ? theme.colors.babyBlue
-                                                : theme.colors.darkGray2
-                                        }
-                                        onClick={() => setSelectedButton(0)}
-                                        className={
-                                            selectedButton === 0 ? "selected" : ""
-                                        }
-                                    >
-                                        <BiUser
-                                            size={25}
-                                            style={{
-                                                marginRight: "10px",
-                                                color:
-                                                    selectedButton === 0
-                                                        ? theme.colors.babyBlue
-                                                        : theme.colors.darkGray2,
-                                            }}
-                                        />
-                                        Conversas 1:1
-                                    </Button>
-
-                                    <Button
-                                        width="100%"
-                                        display="flex"
-                                        alignItems="center"
-                                        paddingLeft="11px"
-                                        flexShrink="0"
-                                        fontSize="15px"
-                                        fontStyle="normal"
-                                        fontWeight="500"
-                                        lineHeight="normal"
-                                        backgroundColor={
-                                            selectedButton === 1
-                                                ? theme.colors.lightGray3
-                                                : theme.colors.white
-                                        }
-                                        color={
-                                            selectedButton === 1
-                                                ? theme.colors.babyBlue
-                                                : theme.colors.darkGray2
-                                        }
-                                        onClick={() => setSelectedButton(1)}
-                                        className={
-                                            selectedButton === 1 ? "selected" : ""
-                                        }
-                                    >
-                                        <MdChecklist
-                                            size={25}
-                                            style={{
-                                                marginRight: "10px",
-                                                color:
-                                                    selectedButton === 1
-                                                        ? theme.colors.babyBlue
-                                                        : theme.colors.darkGray2,
-                                            }}
-                                        />
-                                        Exemplo
-                                    </Button>
-
-                                    <Button
-                                        width="100%"
-                                        display="flex"
-                                        alignItems="center"
-                                        paddingLeft="11px"
-                                        flexShrink="0"
-                                        fontSize="15px"
-                                        fontStyle="normal"
-                                        fontWeight="500"
-                                        lineHeight="normal"
-                                        backgroundColor={
-                                            selectedButton === 2
-                                                ? theme.colors.lightGray3
-                                                : theme.colors.white
-                                        }
-                                        color={
-                                            selectedButton === 2
-                                                ? theme.colors.babyBlue
-                                                : theme.colors.darkGray2
-                                        }
-                                        onClick={() => setSelectedButton(2)}
-                                        className={
-                                            selectedButton === 2 ? "selected" : ""
-                                        }
-                                    >
-                                        <AiOutlineMessage
-                                            size={25}
-                                            style={{
-                                                marginRight: "10px",
-                                                color:
-                                                    selectedButton === 2
-                                                        ? theme.colors.babyBlue
-                                                        : theme.colors.darkGray2,
-                                            }}
-                                        />
-                                        Exemplo
-                                    </Button>
-
-                                    <Button
-                                        width="100%"
-                                        display="flex"
-                                        alignItems="center"
-                                        paddingLeft="11px"
-                                        flexShrink="0"
-                                        fontSize="15px"
-                                        fontStyle="normal"
-                                        fontWeight="500"
-                                        lineHeight="normal"
-                                        backgroundColor={
-                                            selectedButton === 3
-                                                ? theme.colors.lightGray3
-                                                : theme.colors.white
-                                        }
-                                        color={
-                                            selectedButton === 3
-                                                ? theme.colors.babyBlue
-                                                : theme.colors.darkGray2
-                                        }
-                                        onClick={() => setSelectedButton(3)}
-                                        className={
-                                            selectedButton === 3 ? "selected" : ""
-                                        }
-                                    >
-                                        <PiGearSix
-                                            size={25}
-                                            style={{
-                                                marginRight: "10px",
-                                                color:
-                                                    selectedButton === 3
-                                                        ? theme.colors.babyBlue
-                                                        : theme.colors.darkGray2,
-                                            }}
-                                        />
-                                        Exemplo
-                                    </Button>
-                                </Container>
+                                    <BiUser
+                                        size={25}
+                                        style={{
+                                            marginRight: "10px",
+                                            color:
+                                                selectedButton === 0
+                                                    ? theme.colors.babyBlue
+                                                    : theme.colors.darkGray2,
+                                        }}
+                                    />
+                                    Conversas 1:1
+                                </Button>
 
                                 <Button
                                     width="100%"
@@ -483,19 +460,134 @@ const Dashboard = () => {
                                     fontStyle="normal"
                                     fontWeight="500"
                                     lineHeight="normal"
-                                    color={theme.colors.darkGray2}
-                                    backgroundColor={theme.colors.white}
-                                    onClick={handleLogout}
+                                    backgroundColor={
+                                        selectedButton === 1
+                                            ? theme.colors.lightGray3
+                                            : theme.colors.white
+                                    }
+                                    color={
+                                        selectedButton === 1
+                                            ? theme.colors.babyBlue
+                                            : theme.colors.darkGray2
+                                    }
+                                    onClick={() => setSelectedButton(1)}
+                                    className={
+                                        selectedButton === 1 ? "selected" : ""
+                                    }
                                 >
-                                    <img
-                                        src={logoutIcon}
+                                    <MdChecklist
+                                        size={25}
                                         style={{
                                             marginRight: "10px",
+                                            color:
+                                                selectedButton === 1
+                                                    ? theme.colors.babyBlue
+                                                    : theme.colors.darkGray2,
                                         }}
                                     />
-                                    Sair
+                                    Exemplo
+                                </Button>
+
+                                <Button
+                                    width="100%"
+                                    display="flex"
+                                    alignItems="center"
+                                    paddingLeft="11px"
+                                    flexShrink="0"
+                                    fontSize="15px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    backgroundColor={
+                                        selectedButton === 2
+                                            ? theme.colors.lightGray3
+                                            : theme.colors.white
+                                    }
+                                    color={
+                                        selectedButton === 2
+                                            ? theme.colors.babyBlue
+                                            : theme.colors.darkGray2
+                                    }
+                                    onClick={() => setSelectedButton(2)}
+                                    className={
+                                        selectedButton === 2 ? "selected" : ""
+                                    }
+                                >
+                                    <AiOutlineMessage
+                                        size={25}
+                                        style={{
+                                            marginRight: "10px",
+                                            color:
+                                                selectedButton === 2
+                                                    ? theme.colors.babyBlue
+                                                    : theme.colors.darkGray2,
+                                        }}
+                                    />
+                                    Exemplo
+                                </Button>
+
+                                <Button
+                                    width="100%"
+                                    display="flex"
+                                    alignItems="center"
+                                    paddingLeft="11px"
+                                    flexShrink="0"
+                                    fontSize="15px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    backgroundColor={
+                                        selectedButton === 3
+                                            ? theme.colors.lightGray3
+                                            : theme.colors.white
+                                    }
+                                    color={
+                                        selectedButton === 3
+                                            ? theme.colors.babyBlue
+                                            : theme.colors.darkGray2
+                                    }
+                                    onClick={() => setSelectedButton(3)}
+                                    className={
+                                        selectedButton === 3 ? "selected" : ""
+                                    }
+                                >
+                                    <PiGearSix
+                                        size={25}
+                                        style={{
+                                            marginRight: "10px",
+                                            color:
+                                                selectedButton === 3
+                                                    ? theme.colors.babyBlue
+                                                    : theme.colors.darkGray2,
+                                        }}
+                                    />
+                                    Exemplo
                                 </Button>
                             </Container>
+
+                            <Button
+                                width="100%"
+                                display="flex"
+                                alignItems="center"
+                                paddingLeft="11px"
+                                flexShrink="0"
+                                fontSize="15px"
+                                fontStyle="normal"
+                                fontWeight="500"
+                                lineHeight="normal"
+                                color={theme.colors.darkGray2}
+                                backgroundColor={theme.colors.white}
+                                onClick={handleLogout}
+                            >
+                                <img
+                                    src={logoutIcon}
+                                    style={{
+                                        marginRight: "10px",
+                                    }}
+                                />
+                                Sair
+                            </Button>
+                        </Container>
                     </Sidebar>
                 </>
             ) : (
@@ -535,7 +627,10 @@ const Dashboard = () => {
                                 alt="Company icon"
                             />
 
-                            <RxAvatar size={25} style={{ marginRight: "10px" }} />
+                            <RxAvatar
+                                size={25}
+                                style={{ marginRight: "10px" }}
+                            />
                         </Header>
 
                         <Container
@@ -607,15 +702,16 @@ const Dashboard = () => {
                                         style={
                                             activeScheduleList === "upcoming"
                                                 ? {
-                                                    color: theme.colors.white,
-                                                    backgroundColor:
-                                                        theme.colors.babyBlue,
-                                                }
+                                                      color: theme.colors.white,
+                                                      backgroundColor:
+                                                          theme.colors.babyBlue,
+                                                  }
                                                 : {
-                                                    color: theme.colors.babyBlue,
-                                                    backgroundColor:
-                                                        theme.colors.white,
-                                                }
+                                                      color: theme.colors
+                                                          .babyBlue,
+                                                      backgroundColor:
+                                                          theme.colors.white,
+                                                  }
                                         }
                                         onClick={() =>
                                             setActiveScheduleList("upcoming")
@@ -630,15 +726,16 @@ const Dashboard = () => {
                                         style={
                                             activeScheduleList === "past"
                                                 ? {
-                                                    color: theme.colors.white,
-                                                    backgroundColor:
-                                                        theme.colors.babyBlue,
-                                                }
+                                                      color: theme.colors.white,
+                                                      backgroundColor:
+                                                          theme.colors.babyBlue,
+                                                  }
                                                 : {
-                                                    color: theme.colors.babyBlue,
-                                                    backgroundColor:
-                                                        theme.colors.white,
-                                                }
+                                                      color: theme.colors
+                                                          .babyBlue,
+                                                      backgroundColor:
+                                                          theme.colors.white,
+                                                  }
                                         }
                                         onClick={() =>
                                             setActiveScheduleList("past")
@@ -660,226 +757,102 @@ const Dashboard = () => {
                             >
                                 {activeScheduleList === "upcoming"
                                     ? upcomingSchedules.map((schedule) => (
-                                        <Schedules schedule={schedule} />
-                                    ))
+                                          <Schedules schedule={schedule} />
+                                      ))
                                     : pastSchedules.map((schedule) => (
-                                        <Schedules schedule={schedule} />
-                                    ))}
+                                          <Schedules schedule={schedule} />
+                                      ))}
                             </Container>
                         </Container>
                     </Container>
 
                     {sidebarVisibility && (
-                            <Sidebar
-                                className="sidebar"
-                                height="100%"
-                                width="75%"
-                                padding="16px"
-                                position="absolute"
-                                top="0px"
-                                left="0px"
-                                borderRadius=" 0px 17px 17px 0px"
-                                borderRight={`1px solid ${theme.colors.lightGray}`}
-                                boxShadow="24px 0px 200px 0px rgba(0, 0, 0, 0.40)"
-                                backgroundColor={theme.colors.white}
-                                ref={sidebarRef}
+                        <Sidebar
+                            className="sidebar"
+                            height="100%"
+                            width="75%"
+                            padding="16px"
+                            position="absolute"
+                            top="0px"
+                            left="0px"
+                            borderRadius=" 0px 17px 17px 0px"
+                            borderRight={`1px solid ${theme.colors.lightGray}`}
+                            boxShadow="24px 0px 200px 0px rgba(0, 0, 0, 0.40)"
+                            backgroundColor={theme.colors.white}
+                            ref={sidebarRef}
+                        >
+                            <Header
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                height="10%"
+                                width="100%"
+                                color={theme.colors.babyBlue}
                             >
-                                <Header
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    height="10%"
-                                    width="100%"
-                                    color={theme.colors.babyBlue}
-                                >
-                                    <img
-                                        src={companyIcon}
-                                        className="logo"
-                                        alt="Company icon"
-                                        width="50%"
-                                    />
-                                </Header>
+                                <img
+                                    src={companyIcon}
+                                    className="logo"
+                                    alt="Company icon"
+                                    width="50%"
+                                />
+                            </Header>
 
+                            <Container
+                                height="70%"
+                                width="100%"
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
                                 <Container
-                                    height="70%"
                                     width="100%"
-                                    display="flex"
+                                    className="btnsContainer"
+                                    display="inline-flex"
                                     flexDirection="column"
-                                    alignItems="center"
-                                    justifyContent="space-between"
+                                    alignItems="flex-start"
+                                    gap="21px"
                                 >
-                                    <Container
+                                    <Button
                                         width="100%"
-                                        className="btnsContainer"
-                                        display="inline-flex"
-                                        flexDirection="column"
-                                        alignItems="flex-start"
-                                        gap="21px"
+                                        display="flex"
+                                        alignItems="center"
+                                        paddingLeft="11px"
+                                        flexShrink="0"
+                                        fontSize="15px"
+                                        fontStyle="normal"
+                                        fontWeight="500"
+                                        lineHeight="normal"
+                                        backgroundColor={
+                                            selectedButton === 0
+                                                ? theme.colors.lightGray3
+                                                : theme.colors.white
+                                        }
+                                        color={
+                                            selectedButton === 0
+                                                ? theme.colors.babyBlue
+                                                : theme.colors.darkGray2
+                                        }
+                                        onClick={() => setSelectedButton(0)}
+                                        className={
+                                            selectedButton === 0
+                                                ? "selected"
+                                                : ""
+                                        }
                                     >
-                                        <Button
-                                            width="100%"
-                                            display="flex"
-                                            alignItems="center"
-                                            paddingLeft="11px"
-                                            flexShrink="0"
-                                            fontSize="15px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="normal"
-                                            backgroundColor={
-                                                selectedButton === 0
-                                                    ? theme.colors.lightGray3
-                                                    : theme.colors.white
-                                            }
-                                            color={
-                                                selectedButton === 0
-                                                    ? theme.colors.babyBlue
-                                                    : theme.colors.darkGray2
-                                            }
-                                            onClick={() => setSelectedButton(0)}
-                                            className={
-                                                selectedButton === 0
-                                                    ? "selected"
-                                                    : ""
-                                            }
-                                        >
-                                            <BiUser
-                                                size={25}
-                                                style={{
-                                                    marginRight: "10px",
-                                                    color:
-                                                        selectedButton === 0
-                                                            ? theme.colors.babyBlue
-                                                            : theme.colors
-                                                                .darkGray2,
-                                                }}
-                                            />
-                                            Conversas 1:1
-                                        </Button>
-
-                                        <Button
-                                            width="100%"
-                                            display="flex"
-                                            alignItems="center"
-                                            paddingLeft="11px"
-                                            flexShrink="0"
-                                            fontSize="15px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="normal"
-                                            backgroundColor={
-                                                selectedButton === 1
-                                                    ? theme.colors.lightGray3
-                                                    : theme.colors.white
-                                            }
-                                            color={
-                                                selectedButton === 1
-                                                    ? theme.colors.babyBlue
-                                                    : theme.colors.darkGray2
-                                            }
-                                            onClick={() => setSelectedButton(1)}
-                                            className={
-                                                selectedButton === 1
-                                                    ? "selected"
-                                                    : ""
-                                            }
-                                        >
-                                            <MdChecklist
-                                                size={25}
-                                                style={{
-                                                    marginRight: "10px",
-                                                    color:
-                                                        selectedButton === 1
-                                                            ? theme.colors.babyBlue
-                                                            : theme.colors
-                                                                .darkGray2,
-                                                }}
-                                            />
-                                            Exemplo
-                                        </Button>
-
-                                        <Button
-                                            width="100%"
-                                            display="flex"
-                                            alignItems="center"
-                                            paddingLeft="11px"
-                                            flexShrink="0"
-                                            fontSize="15px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="normal"
-                                            backgroundColor={
-                                                selectedButton === 2
-                                                    ? theme.colors.lightGray3
-                                                    : theme.colors.white
-                                            }
-                                            color={
-                                                selectedButton === 2
-                                                    ? theme.colors.babyBlue
-                                                    : theme.colors.darkGray2
-                                            }
-                                            onClick={() => setSelectedButton(2)}
-                                            className={
-                                                selectedButton === 2
-                                                    ? "selected"
-                                                    : ""
-                                            }
-                                        >
-                                            <AiOutlineMessage
-                                                size={25}
-                                                style={{
-                                                    marginRight: "10px",
-                                                    color:
-                                                        selectedButton === 2
-                                                            ? theme.colors.babyBlue
-                                                            : theme.colors
-                                                                .darkGray2,
-                                                }}
-                                            />
-                                            Exemplo
-                                        </Button>
-
-                                        <Button
-                                            width="100%"
-                                            display="flex"
-                                            alignItems="center"
-                                            paddingLeft="11px"
-                                            flexShrink="0"
-                                            fontSize="15px"
-                                            fontStyle="normal"
-                                            fontWeight="500"
-                                            lineHeight="normal"
-                                            backgroundColor={
-                                                selectedButton === 3
-                                                    ? theme.colors.lightGray3
-                                                    : theme.colors.white
-                                            }
-                                            color={
-                                                selectedButton === 3
-                                                    ? theme.colors.babyBlue
-                                                    : theme.colors.darkGray2
-                                            }
-                                            onClick={() => setSelectedButton(3)}
-                                            className={
-                                                selectedButton === 3
-                                                    ? "selected"
-                                                    : ""
-                                            }
-                                        >
-                                            <PiGearSix
-                                                size={25}
-                                                style={{
-                                                    marginRight: "10px",
-                                                    color:
-                                                        selectedButton === 3
-                                                            ? theme.colors.babyBlue
-                                                            : theme.colors
-                                                                .darkGray2,
-                                                }}
-                                            />
-                                            Exemplo
-                                        </Button>
-                                    </Container>
+                                        <BiUser
+                                            size={25}
+                                            style={{
+                                                marginRight: "10px",
+                                                color:
+                                                    selectedButton === 0
+                                                        ? theme.colors.babyBlue
+                                                        : theme.colors
+                                                              .darkGray2,
+                                            }}
+                                        />
+                                        Conversas 1:1
+                                    </Button>
 
                                     <Button
                                         width="100%"
@@ -891,20 +864,144 @@ const Dashboard = () => {
                                         fontStyle="normal"
                                         fontWeight="500"
                                         lineHeight="normal"
-                                        color={theme.colors.darkGray2}
-                                        backgroundColor={theme.colors.white}
-                                        onClick={handleLogout}
+                                        backgroundColor={
+                                            selectedButton === 1
+                                                ? theme.colors.lightGray3
+                                                : theme.colors.white
+                                        }
+                                        color={
+                                            selectedButton === 1
+                                                ? theme.colors.babyBlue
+                                                : theme.colors.darkGray2
+                                        }
+                                        onClick={() => setSelectedButton(1)}
+                                        className={
+                                            selectedButton === 1
+                                                ? "selected"
+                                                : ""
+                                        }
                                     >
-                                        <img
-                                            src={logoutIcon}
+                                        <MdChecklist
+                                            size={25}
                                             style={{
                                                 marginRight: "10px",
+                                                color:
+                                                    selectedButton === 1
+                                                        ? theme.colors.babyBlue
+                                                        : theme.colors
+                                                              .darkGray2,
                                             }}
                                         />
-                                        Sair
+                                        Exemplo
+                                    </Button>
+
+                                    <Button
+                                        width="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        paddingLeft="11px"
+                                        flexShrink="0"
+                                        fontSize="15px"
+                                        fontStyle="normal"
+                                        fontWeight="500"
+                                        lineHeight="normal"
+                                        backgroundColor={
+                                            selectedButton === 2
+                                                ? theme.colors.lightGray3
+                                                : theme.colors.white
+                                        }
+                                        color={
+                                            selectedButton === 2
+                                                ? theme.colors.babyBlue
+                                                : theme.colors.darkGray2
+                                        }
+                                        onClick={() => setSelectedButton(2)}
+                                        className={
+                                            selectedButton === 2
+                                                ? "selected"
+                                                : ""
+                                        }
+                                    >
+                                        <AiOutlineMessage
+                                            size={25}
+                                            style={{
+                                                marginRight: "10px",
+                                                color:
+                                                    selectedButton === 2
+                                                        ? theme.colors.babyBlue
+                                                        : theme.colors
+                                                              .darkGray2,
+                                            }}
+                                        />
+                                        Exemplo
+                                    </Button>
+
+                                    <Button
+                                        width="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        paddingLeft="11px"
+                                        flexShrink="0"
+                                        fontSize="15px"
+                                        fontStyle="normal"
+                                        fontWeight="500"
+                                        lineHeight="normal"
+                                        backgroundColor={
+                                            selectedButton === 3
+                                                ? theme.colors.lightGray3
+                                                : theme.colors.white
+                                        }
+                                        color={
+                                            selectedButton === 3
+                                                ? theme.colors.babyBlue
+                                                : theme.colors.darkGray2
+                                        }
+                                        onClick={() => setSelectedButton(3)}
+                                        className={
+                                            selectedButton === 3
+                                                ? "selected"
+                                                : ""
+                                        }
+                                    >
+                                        <PiGearSix
+                                            size={25}
+                                            style={{
+                                                marginRight: "10px",
+                                                color:
+                                                    selectedButton === 3
+                                                        ? theme.colors.babyBlue
+                                                        : theme.colors
+                                                              .darkGray2,
+                                            }}
+                                        />
+                                        Exemplo
                                     </Button>
                                 </Container>
-                            </Sidebar>
+
+                                <Button
+                                    width="100%"
+                                    display="flex"
+                                    alignItems="center"
+                                    paddingLeft="11px"
+                                    flexShrink="0"
+                                    fontSize="15px"
+                                    fontStyle="normal"
+                                    fontWeight="500"
+                                    lineHeight="normal"
+                                    color={theme.colors.darkGray2}
+                                    backgroundColor={theme.colors.white}
+                                    onClick={handleLogout}
+                                >
+                                    <img
+                                        src={logoutIcon}
+                                        style={{
+                                            marginRight: "10px",
+                                        }}
+                                    />
+                                    Sair
+                                </Button>
+                            </Container>
+                        </Sidebar>
                     )}
 
                     <img

@@ -1,11 +1,11 @@
 import React from "react";
-
 import { Navigate } from "react-router-dom";
+import Provider from "../../context";
 
-const PrivateRoute = ({ children }) => {
-    const mail = localStorage.getItem("@MAIL");
+function PrivateRoute({ element: Element }) {
+    const token = localStorage.getItem("@STARTPN-TOKEN");
 
-    return mail != undefined ? children : <Navigate to="/" />;
-};
+    return token ? <Provider>{Element}</Provider> : <Navigate to="/login" />;
+}
 
 export default PrivateRoute;
