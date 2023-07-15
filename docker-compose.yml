@@ -4,8 +4,8 @@ services:
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}"
     environment:
-      - POSTGRES_DATABASE=startpn
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
