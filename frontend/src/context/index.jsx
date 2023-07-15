@@ -2,7 +2,7 @@ import React from "react";
 import UserProvider from "./user";
 import SchedulesProvider from "./schedules";
 import UsersProvider from "./users";
-import TalkingPointProvider from "./TalkingPoint";
+import TalkingPointProvider from "./talkingPoint";
 
 function Provider({ children }) {
     return (

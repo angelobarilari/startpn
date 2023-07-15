@@ -58,17 +58,15 @@ const Register = () => {
         <>
             {isDesktop ? (
                 <Container
-                    minWidth="100%"
+                    width="100%"
                     height="100vh"
                     display="flex"
                     justifyContent="flex-start"
-                    flexShrink="0"
                 >
                     <img src={steveJobs} alt="Steve Jobs photo" />
 
                     <Container
-                        width="100%"
-                        minHeight="100%"
+                        className="test"
                         margin="50px 100px"
                         display="flex"
                         flexDirection="column"
