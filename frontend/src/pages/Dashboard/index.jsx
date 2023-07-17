@@ -295,7 +295,6 @@ const Dashboard = () => {
                                     flexDirection="column"
                                     gap="10px"
                                 >
-
                                     {upcomingSchedules.length > 0 ? (
                                         <Container
                                             className="detailsTalkingPoints"
@@ -315,7 +314,8 @@ const Dashboard = () => {
                                                 style={{
                                                     ...modalHeaderStyle,
                                                     height: "50px",
-                                                    justifyContent: "flex-start",
+                                                    justifyContent:
+                                                        "flex-start",
                                                     paddingLeft: "20px",
                                                 }}
                                             >
@@ -344,7 +344,10 @@ const Dashboard = () => {
                                             {talkingPoints && (
                                                 <>
                                                     {talkingPoints.map(
-                                                        (talkingPoint, index) => (
+                                                        (
+                                                            talkingPoint,
+                                                            index
+                                                        ) => (
                                                             <TalkingPointItem
                                                                 talkingPoint={
                                                                     talkingPoint
@@ -357,8 +360,7 @@ const Dashboard = () => {
                                             )}
                                         </Container>
                                     ) : (
-                                        <>
-                                        </>
+                                        <></>
                                     )}
 
                                     {selectedCard && (

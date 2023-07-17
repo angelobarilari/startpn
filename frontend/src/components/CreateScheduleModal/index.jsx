@@ -245,8 +245,10 @@ const CreateScheduleModal = ({ isOpen, onClose }) => {
                                 justifyContent="flex-start"
                                 gap="20px"
                             >
-                                <BsCircleFill 
-                                size={30} color={theme.colors.babyBlue} />
+                                <BsCircleFill
+                                    size={30}
+                                    color={theme.colors.babyBlue}
+                                />
 
                                 <Container width="100%">
                                     <Label

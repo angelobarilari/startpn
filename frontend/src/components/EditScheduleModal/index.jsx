@@ -38,9 +38,8 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const [newScheduleHour, setNewScheduleHour] = useState("");
     const [newGuest, setNewGuest] = useState(undefined);
 
-    
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
-    
+
     const handleEditSchedule = (event) => {
         event.preventDefault();
 
@@ -214,9 +213,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                         name="guest"
                         onChange={(event) => setNewGuest(event.target.value)}
                         value={
-                            newGuest == undefined
-                                ? schedule.guest.id
-                                : newGuest
+                            newGuest == undefined ? schedule.guest.id : newGuest
                         }
                     >
                         <option
@@ -229,10 +226,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                             .filter((user) => user.name !== schedule.owner.name)
                             .filter((user) => user.name !== schedule.guest.name)
                             .map((user) => (
-                                <option
-                                    key={user.id}
-                                    value={user.id}
-                                >
+                                <option key={user.id} value={user.id}>
                                     {user.name}
                                 </option>
                             ))}
