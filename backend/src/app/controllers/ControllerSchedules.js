@@ -81,10 +81,10 @@ class ControllerSchedules {
                     message:"No permissions to perform this action"
                 })
 
-            const { scheduleName, startDate, endDate, guestEmail, talkingPoints } = req.body
-
+            const { scheduleName, startDate, endDate, guestId, talkingPoints } = req.body
+            
             const updatedSchedule = await schedule.update(
-                { scheduleName, startDate, endDate, guestEmail, talkingPoints }, 
+                { scheduleName, startDate, endDate, guestId, talkingPoints }, 
                 { returning: true }
             )
 
@@ -94,7 +94,9 @@ class ControllerSchedules {
             })
 
         } catch (error) {
-            
+            return res.status(500).json({ 
+                essage: error.message
+            })
         }
     }
 

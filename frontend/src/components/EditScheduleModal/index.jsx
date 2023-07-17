@@ -38,8 +38,9 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
     const [newScheduleHour, setNewScheduleHour] = useState("");
     const [newGuest, setNewGuest] = useState(undefined);
 
+    
     const [talkingPoints, setTalkingPoints] = useState(schedule.talkingPoints);
-
+    
     const handleEditSchedule = (event) => {
         event.preventDefault();
 
@@ -52,7 +53,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
             scheduleName: newScheduleName,
             startDate,
             endDate,
-            guestEmail: newGuest,
+            guestId: newGuest,
             talkingPoints,
         };
 
@@ -212,11 +213,15 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                         style={inputStyle}
                         name="guest"
                         onChange={(event) => setNewGuest(event.target.value)}
-                        value={schedule.guest}
+                        value={
+                            newGuest == undefined
+                                ? schedule.guest.id
+                                : newGuest
+                        }
                     >
                         <option
-                            key={schedule.guest.email}
-                            value={schedule.guest.email}
+                            key={schedule.guest.id}
+                            value={schedule.guest.id}
                         >
                             {schedule.guest.name}
                         </option>
@@ -226,10 +231,7 @@ const EditScheduleModal = ({ isOpen, onClose, schedule }) => {
                             .map((user) => (
                                 <option
                                     key={user.id}
-                                    value={user.email}
-                                    defaultValue={
-                                        user.name === schedule.guest.name
-                                    }
+                                    value={user.id}
                                 >
                                     {user.name}
                                 </option>

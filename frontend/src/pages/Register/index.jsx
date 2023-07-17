@@ -203,18 +203,6 @@ const Register = () => {
                                 height="20%"
                                 marginTop="10px"
                             >
-                                {/* <Input
-                                    type="checkbox"
-                                    width="20%"
-                                    height="50%"
-                                    borderRadius="10px"
-                                    border={`5px solid ${theme.colors.babyBlue}`}
-                                    onChange={(event) =>
-                                        setConfirmTerms(event.target.checked)
-                                    }
-                                    value={confirmTerms}
-                                /> */}
-
                                 {confirmTerms ? (
                                     <BsCheckCircleFill
                                         size={50}

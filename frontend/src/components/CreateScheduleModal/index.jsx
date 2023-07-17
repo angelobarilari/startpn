@@ -22,6 +22,7 @@ import { inputStyle } from "../../global/styles/input";
 import { labelStyle } from "../../global/styles/label";
 
 import { AiOutlineClose } from "react-icons/ai";
+import { BsCircleFill } from "react-icons/bs";
 
 import { UsersContext } from "../../context/users";
 
@@ -231,21 +232,23 @@ const CreateScheduleModal = ({ isOpen, onClose }) => {
                             width="100%"
                             height="fit-content"
                             display="flex"
-                            alignItems="center"
+                            alignItems="flex-start"
                             justifyContent="space-between"
                             flexDirection="column"
                             key={index}
                         >
                             <Container
-                                minWidth="100%%"
+                                minWidth="100%"
                                 paddingBottom="20px"
                                 display="flex"
                                 alignItems="center"
-                                justifyContent="space-between"
+                                justifyContent="flex-start"
+                                gap="20px"
                             >
-                                <div style={{ color: "black" }}>ICON</div>
+                                <BsCircleFill 
+                                size={30} color={theme.colors.babyBlue} />
 
-                                <Container width="80%">
+                                <Container width="100%">
                                     <Label
                                         style={labelStyle}
                                         htmlFor={`scheduleTopic_${index}`}

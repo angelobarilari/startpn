@@ -26,6 +26,7 @@ import { useMediaQuery } from "react-responsive";
 
 import { AiOutlineMessage } from "react-icons/ai";
 import { RiSearch2Line } from "react-icons/ri";
+import { BsCircleFill } from "react-icons/bs";
 import { MdChecklist } from "react-icons/md";
 import { PiGearSix } from "react-icons/pi";
 import { BiUser } from "react-icons/bi";
@@ -45,7 +46,7 @@ const Dashboard = () => {
     const [createScheduleModalIsOpen, setCreateScheduleModalIsOpen] =
         useState(false);
 
-    const [talkingPoints, setTalkingPoints] = useState(null);
+    const [talkingPoints, setTalkingPoints] = useState([]);
 
     const sidebarRef = useRef(null);
 
@@ -294,66 +295,71 @@ const Dashboard = () => {
                                     flexDirection="column"
                                     gap="10px"
                                 >
-                                    <Container
-                                        className="detailsTalkingPoints"
-                                        display="flex"
-                                        flexDirection="column"
-                                        alignItems="flex-start"
-                                        width="100%"
-                                        height="180px"
-                                        overflowY="auto"
-                                        // height="fit-content"
-                                        backgroundColor="white"
-                                        borderRadius="10px"
-                                        background={theme.colors.white}
-                                        border={`1px solid ${theme.colors.lightGray}`}
-                                    >
+
+                                    {talkingPoints.length > 0 ? (
                                         <Container
-                                            className="detailsTalkingPointsHeader"
-                                            style={{
-                                                ...modalHeaderStyle,
-                                                height: "50px",
-                                                justifyContent: "flex-start",
-                                                paddingLeft: "20px",
-                                            }}
-                                        >
-                                            <Span
-                                                width="100%"
-                                                fontSize="18px"
-                                                fontStyle="normal"
-                                                fontWeight="500"
-                                                lineHeight="normal"
-                                                color={theme.colors.black}
-                                                textAlign="left"
-                                            >
-                                                Talking Points da 1:1
-                                            </Span>
-                                        </Container>
-
-                                        <Line
-                                            borderColor={
-                                                theme.colors.lightGray3
-                                            }
-                                            height="fit-content"
+                                            className="detailsTalkingPoints"
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems="flex-start"
                                             width="100%"
-                                            marginTop="0px"
-                                        />
+                                            height="180px"
+                                            overflowY="auto"
+                                            backgroundColor="white"
+                                            borderRadius="10px"
+                                            background={theme.colors.white}
+                                            border={`1px solid ${theme.colors.lightGray}`}
+                                        >
+                                            <Container
+                                                className="detailsTalkingPointsHeader"
+                                                style={{
+                                                    ...modalHeaderStyle,
+                                                    height: "50px",
+                                                    justifyContent: "flex-start",
+                                                    paddingLeft: "20px",
+                                                }}
+                                            >
+                                                <Span
+                                                    width="100%"
+                                                    fontSize="18px"
+                                                    fontStyle="normal"
+                                                    fontWeight="500"
+                                                    lineHeight="normal"
+                                                    color={theme.colors.black}
+                                                    textAlign="left"
+                                                >
+                                                    Talking Points da 1:1
+                                                </Span>
+                                            </Container>
 
-                                        {talkingPoints && (
-                                            <>
-                                                {talkingPoints.map(
-                                                    (talkingPoint, index) => (
-                                                        <TalkingPointItem
-                                                            talkingPoint={
-                                                                talkingPoint
-                                                            }
-                                                            index={index}
-                                                        />
-                                                    )
-                                                )}
-                                            </>
-                                        )}
-                                    </Container>
+                                            <Line
+                                                borderColor={
+                                                    theme.colors.lightGray3
+                                                }
+                                                height="fit-content"
+                                                width="100%"
+                                                marginTop="0px"
+                                            />
+
+                                            {talkingPoints && (
+                                                <>
+                                                    {talkingPoints.map(
+                                                        (talkingPoint, index) => (
+                                                            <TalkingPointItem
+                                                                talkingPoint={
+                                                                    talkingPoint
+                                                                }
+                                                                index={index}
+                                                            />
+                                                        )
+                                                    )}
+                                                </>
+                                            )}
+                                        </Container>
+                                    ) : (
+                                        <>
+                                        </>
+                                    )}
 
                                     {selectedCard && (
                                         <>

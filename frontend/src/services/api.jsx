@@ -1,7 +1,7 @@
 import { create } from "apisauce";
 
 const api = create({
-    baseURL: "http://104.154.19.120:3000/",
+    baseURL: "http://localhost:3000/",
 });
 
 api.addAsyncRequestTransform((response) => async () => {
@@ -49,8 +49,12 @@ export const createSchedule = async (data) => {
 
 export const updateSchedule = async (data, scheduleId) => {
     console.log(data);
+    console.log(scheduleId)
     api.patch(`schedules/${scheduleId}`, data)
-        .then((res) => window.location.reload())
+        .then((res) => {
+            console.log(res.data)
+            // window.location.reload()
+        })
         .catch((err) => console.log(err.response.data));
 };
 
