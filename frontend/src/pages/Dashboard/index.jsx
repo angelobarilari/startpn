@@ -296,7 +296,7 @@ const Dashboard = () => {
                                     gap="10px"
                                 >
 
-                                    {talkingPoints.length > 0 ? (
+                                    {upcomingSchedules.length > 0 ? (
                                         <Container
                                             className="detailsTalkingPoints"
                                             display="flex"

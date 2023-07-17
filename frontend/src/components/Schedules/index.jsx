@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
+import DetailsScheduleModal from "../DetailsScheduleModal";
+import DeleteScheduleModal from "../DeleteScheduleModal";
+import EditScheduleModal from "../EditScheduleModal";
 import Container from "../../components/Container";
 import Card from "../../components/Card/Index";
 import Button from "../../components/Button";
 import Line from "../../components/Line";
 import Span from "../../components/Span";
-import DetailsScheduleModal from "../DetailsScheduleModal";
-import DeleteScheduleModal from "../DeleteScheduleModal";
-import EditScheduleModal from "../EditScheduleModal";
+
 import Modal from "react-modal";
 
 import { theme } from "../../global/styles/theme";
@@ -149,7 +150,7 @@ const Schedule = ({ onClick, schedule }) => {
                             textAlign="left"
                             fontSize="12px"
                             fontStyle="normal"
-                            fontWeight="500"
+                            fontWeight="600"
                             lineHeight="14px"
                             letterSpacing="0.75px"
                             display="flex"
