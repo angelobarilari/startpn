@@ -1,7 +1,7 @@
 import { create } from "apisauce";
 
 const api = create({
-    baseURL: "http://localhost:3000/",
+    baseURL: "http://104.154.19.120:3000/",
 });
 
 api.addAsyncRequestTransform((response) => async () => {
